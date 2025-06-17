@@ -4,9 +4,12 @@ import {
   ImageSourcePropType,
   Pressable,
   useWindowDimensions,
-  View,
 } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import {
+  GestureDetector,
+  Gesture,
+  GestureHandlerRootView,
+} from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -18,8 +21,8 @@ import { pendingVotingPosition } from '../config';
 type Props = {
   isError: boolean;
   imgId: string;
-  order: number;
   imgSource: ImageSourcePropType;
+  order: number;
   votedImg: {
     id: string;
     voteResult: 1 | 0;
@@ -34,8 +37,8 @@ type Props = {
 export default function VotingImageCard({
   isError,
   imgId,
-  order,
   imgSource,
+  order,
   votedImg,
   handleVoteImg,
   dragEventListener,
@@ -119,8 +122,9 @@ export default function VotingImageCard({
   };
 
   return (
-    <View
+    <GestureHandlerRootView
       style={{
+        flex: 1,
         position: 'absolute',
         top: 0,
         left: 0,
@@ -148,6 +152,6 @@ export default function VotingImageCard({
           </Pressable>
         </Animated.View>
       </GestureDetector>
-    </View>
+    </GestureHandlerRootView>
   );
 }
