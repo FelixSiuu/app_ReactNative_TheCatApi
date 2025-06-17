@@ -3,14 +3,14 @@ import Request from './request';
 const baseUrl = 'https://api.thecatapi.com/';
 
 // Ask for 1 Image, at full resolution
-export const request_getImg = () => {
+export const request_getImg = (params: {
+  limit?: number;
+  size?: 'thumb' | 'small' | 'med' | 'full';
+}) => {
   return Request({
     method: 'get',
     url: `${baseUrl}v1/images/search`,
-    params: {
-      limit: 1,
-      size: 'full',
-    },
+    params,
   });
 };
 
