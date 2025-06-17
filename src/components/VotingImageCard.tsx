@@ -133,7 +133,7 @@ export default function VotingImageCard({
             onPress={handlePressImage}
             style={{
               width: windowWidth,
-              height: windowHeight - 64,
+              height: windowHeight - 60,
               backgroundColor: 'rgba(0,0,0,0.8)',
             }}
           >
@@ -141,7 +141,7 @@ export default function VotingImageCard({
               source={imgSource}
               style={{
                 width: windowWidth,
-                height: windowHeight - 64,
+                height: windowHeight - 60,
               }}
               contentFit={isCoverContent ? 'cover' : 'contain'}
             />
