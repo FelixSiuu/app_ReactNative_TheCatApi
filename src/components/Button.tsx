@@ -43,7 +43,14 @@ export default function Button({
       )}
 
       {!!label && (
-        <Text style={{ color: 'white', fontSize: 16, fontWeight: 400 }}>
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 16,
+            fontWeight: 400,
+            lineHeight: 16,
+          }}
+        >
           {label}
         </Text>
       )}
@@ -62,6 +69,5 @@ const styles = StyleSheet.create({
     paddingVertical: '2%',
     borderRadius: 20,
     height: 40,
-    maxWidth: 200,
   },
 });

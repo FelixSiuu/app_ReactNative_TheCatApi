@@ -30,7 +30,7 @@ type VotedImgState = {
 
 export type settingsType = {
   limit: number;
-  mine_types?: 'jpg,png,gif';
+  mine_types?: 'jpg' | 'png' | 'gif';
   has_breeds?: boolean;
   size?: 'thumb' | 'small' | 'med' | 'full';
 };
