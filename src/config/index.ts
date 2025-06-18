@@ -1,8 +1,8 @@
 export const subId = 'lovecatguy';
 
 export const pendingVotingPosition = {
-  left: -120,
-  right: 120,
+  left: -100,
+  right: 100,
 };
 
 export const colorMap = {
@@ -10,6 +10,6 @@ export const colorMap = {
   disabled: '#cbcbcb',
   retry: '#ff6841',
   votingBtnDisabled: '#837777',
-  'vote-up': '#597ad0',
+  'vote-up': '#00a651',
   'vote-down': '#f73132',
 };

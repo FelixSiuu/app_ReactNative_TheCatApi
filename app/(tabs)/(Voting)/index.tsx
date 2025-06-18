@@ -243,9 +243,12 @@ export default function Voting() {
             type="vote-down"
             onPress={() => voteImg({ voteValue: 0 })}
             disabled={isLoading}
-            isHighLightVoteDown={isHighLightVoteDown}
             customStyle={{
-              backgroundColor: colorMap['votingBtnDisabled'],
+              backgroundColor: isLoading
+                ? colorMap['disabled']
+                : isHighLightVoteDown
+                ? colorMap['vote-down']
+                : colorMap['votingBtnDisabled'],
             }}
           />
         </View>
@@ -256,9 +259,12 @@ export default function Voting() {
             type="vote-up"
             onPress={() => voteImg({ voteValue: 1 })}
             disabled={isLoading}
-            isHighLightVoteUp={isHighLightVoteUp}
             customStyle={{
-              backgroundColor: colorMap['votingBtnDisabled'],
+              backgroundColor: isLoading
+                ? colorMap['disabled']
+                : isHighLightVoteUp
+                ? colorMap['vote-up']
+                : colorMap['votingBtnDisabled'],
             }}
           />
           <Pressable

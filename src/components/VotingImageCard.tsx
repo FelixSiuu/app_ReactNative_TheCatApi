@@ -11,6 +11,7 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -66,21 +67,21 @@ export default function VotingImageCard({
     .onChange((event) => {
       translateX.value += event.changeX;
       translateY.value += event.changeY;
-      dragEventListener({
+      runOnJS(dragEventListener)({
         positionX: translateX.value,
         positionY: translateY.value,
       });
     })
     .onFinalize(() => {
       if (translateX.value <= pendingVotingPosition.left) {
-        handleImgLeft();
-        handleVoteImg(0);
+        runOnJS(handleImgLeft)();
+        runOnJS(handleVoteImg)(0);
         return;
       } else if (translateX.value >= pendingVotingPosition.right) {
-        handleImgRight();
-        handleVoteImg(1);
+        runOnJS(handleImgRight)();
+        runOnJS(handleVoteImg)(1);
       } else {
-        handleImgResetPosition();
+        runOnJS(handleImgResetPosition)();
       }
     });
 
