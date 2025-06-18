@@ -12,6 +12,7 @@ import { View, StyleSheet, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from 'expo-router';
+import { useSettings } from '@/src/context';
 
 const loadingGif = require('@/assets/images/loading.gif');
 
@@ -28,14 +29,9 @@ type VotedImgState = {
   voteResult: 1 | 0;
 };
 
-export type settingsType = {
-  limit: number;
-  mine_types?: 'jpg' | 'png' | 'gif';
-  has_breeds?: boolean;
-  size?: 'thumb' | 'small' | 'med' | 'full';
-};
-
 export default function Voting() {
+  const router = useRouter();
+  const { settings: voteImgParams } = useSettings();
   const [imgs, setImgs] = useState<ImgState[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [votedImg, setVotedImg] = useState<VotedImgState | null>(null);
@@ -46,24 +42,28 @@ export default function Voting() {
   const [isHighLightVoteUp, setIsHighLightVoteUp] = useState<boolean>(false);
   const [isFav, setIsFav] = useState<boolean>(false);
   const [favid, setFavId] = useState<string | null>(null);
-  const [getImgSettings, setGetImgSettings] = useState<settingsType>({
-    limit: 5,
-  });
-  const router = useRouter();
 
   useEffect(() => {
     setIsHighLightVoteDown(false);
     setIsHighLightVoteUp(false);
     setIsFav(false);
-
-    if (imgs.length === 0) getImg();
   }, [imgs]);
+
+  useEffect(() => {
+    console.log('params updated');
+    if (imgs.length === 0) {
+      getImg();
+      return;
+    }
+
+    getImg();
+  }, [voteImgParams]);
 
   async function getImg() {
     setIsLoading(true);
     setIsLoadImgError(false);
     try {
-      const result = await request_getImg(getImgSettings);
+      const result = await request_getImg(voteImgParams);
 
       if (!result) {
         throw new Error(result.message || 'Error!');
@@ -168,14 +168,8 @@ export default function Voting() {
   }
 
   function toSettings() {
-    router.navigate({
+    router.push({
       pathname: '/Settings',
-      params: {
-        limit: getImgSettings.limit,
-        mine_types: getImgSettings.mine_types,
-        has_breed: String(getImgSettings.has_breeds),
-        size: getImgSettings.size,
-      },
     });
   }
 

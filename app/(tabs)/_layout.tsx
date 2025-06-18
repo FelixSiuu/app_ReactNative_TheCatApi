@@ -1,5 +1,4 @@
 import { Tabs } from 'expo-router';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { colorMap } from '@/src/config';
 

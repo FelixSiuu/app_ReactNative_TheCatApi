@@ -6,7 +6,7 @@ const baseUrl = 'https://api.thecatapi.com/';
 export const request_getImg = (params: {
   limit?: number;
   size?: 'thumb' | 'small' | 'med' | 'full';
-  mime_types?: 'jpg' | 'png' | 'gif';
+  mime_types?: string;
   has_breeds?: boolean;
 }) => {
   return Request({

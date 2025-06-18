@@ -6,7 +6,7 @@ type ButtonType = 'vote-up' | 'vote-down' | 'retry';
 
 type Props = {
   label?: string;
-  type: ButtonType;
+  type?: ButtonType;
   onPress?: () => void;
   disabled?: boolean;
   customStyle?: ViewStyle;
