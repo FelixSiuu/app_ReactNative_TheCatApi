@@ -1,14 +1,10 @@
+import { VotingSettingsType } from '../config';
 import Request from './request';
 
 const baseUrl = 'https://api.thecatapi.com/';
 
 // Ask for 1 Image, at full resolution
-export const request_getImg = (params: {
-  limit?: number;
-  size?: 'thumb' | 'small' | 'med' | 'full';
-  mime_types?: string;
-  has_breeds?: boolean;
-}) => {
+export const request_getImg = (params: VotingSettingsType) => {
   return Request({
     method: 'get',
     url: `${baseUrl}v1/images/search`,

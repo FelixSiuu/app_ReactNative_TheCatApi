@@ -6,18 +6,19 @@ import {
   FlatList,
   TouchableHighlight,
   TouchableOpacity,
+  TextStyle,
 } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useState } from 'react';
 import VotingSettingsModal from '@/src/components/VotingSettingsModal';
-import { VotingSettingsType } from '@/src/config';
+import { colorMap, VotingSettingsType } from '@/src/config';
 import { useRouter } from 'expo-router';
 
 type ItemData = {
   key: string;
   title: string;
   value: string | number;
-  original: unknown;
+  original: any;
 };
 
 type ItemProps = {
@@ -25,10 +26,7 @@ type ItemProps = {
   onPress: () => void;
 };
 
-type ModalState = {
-  visible: boolean;
-  content: ItemData;
-};
+type ModalState = ItemData;
 
 export type FlatItemType = ItemData;
 
@@ -54,8 +52,8 @@ export default function Settings() {
       key: 'mine_types',
       title: 'Images type :',
       value: newSettings.mine_types
-        ? newSettings.mine_types.join(',')
-        : 'all ( static, gif )',
+        ? newSettings.mine_types
+        : 'all ( jpg, png, gif )',
       original: newSettings.mine_types,
     },
     {
@@ -70,7 +68,7 @@ export default function Settings() {
       key: 'has_breeds',
       title: 'Has breeds data :',
       value:
-        newSettings.has_breeds === undefined
+        newSettings.has_breeds === ''
           ? 'random'
           : newSettings.has_breeds === true
           ? 'yes'
@@ -78,33 +76,49 @@ export default function Settings() {
       original: newSettings.has_breeds,
     },
   ];
-  const [modal, setModal] = useState<ModalState>({
-    visible: false,
-    content: DATA[0],
-  });
+
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const [modalContent, setModalContent] = useState<ModalState>(DATA[0]);
 
   const Item = ({ onPress, item }: ItemProps) => {
     return (
       <TouchableHighlight onPress={onPress}>
         <View style={styles.settingItem}>
           <Text style={styles.itemTitle}>{item.title}</Text>
-          <Text>{item.value}</Text>
-          <MaterialIcons name="arrow-forward-ios" size={20} color="black" />
+          <Text style={[calcTextStyles(item)]}>{item.value}</Text>
+          <MaterialIcons name="arrow-forward-ios" size={16} color="black" />
         </View>
       </TouchableHighlight>
     );
+  };
+
+  const calcTextStyles = (item: ItemData): TextStyle => {
+    const { key, original } = item;
+
+    const textDiffColor = colorMap['settings-textDiffColor'];
+
+    const textDiffStyleObject = { color: textDiffColor };
+
+    switch (true) {
+      case key === 'limit' && original !== defaultParams.limit:
+      case key === 'mine_types' && original !== defaultParams.mine_types:
+      case key === 'size' && original !== defaultParams.size:
+      case key === 'has_breeds' && original !== defaultParams.has_breeds:
+        return textDiffStyleObject;
+      default:
+        return {};
+    }
   };
 
   const renderItem = ({ item }: { item: ItemData }) => {
     return (
       <Item
         item={item}
-        onPress={() =>
-          setModal({
-            visible: true,
-            content: item,
-          })
-        }
+        onPress={() => {
+          setModalVisible(true);
+          setModalContent(item);
+        }}
       />
     );
   };
@@ -119,18 +133,26 @@ export default function Settings() {
   };
 
   const handleCloseModal = () => {
-    setModal((prev) => ({
-      ...prev,
-      visible: false,
-    }));
+    setModalVisible(false);
+  };
+
+  const handleModalConfirm = (data: ItemData) => {
+    const { key, original } = data;
+    if (key === 'limit') {
+      setNewSettings((prev) => ({
+        ...prev,
+        limit: original,
+      }));
+    }
   };
 
   return (
     <View style={styles.container}>
       <VotingSettingsModal
-        isVisible={modal.visible}
+        isVisible={modalVisible}
         onClose={handleCloseModal}
-        content={modal.content}
+        content={modalContent}
+        onConfirm={handleModalConfirm}
       />
 
       <FlatList

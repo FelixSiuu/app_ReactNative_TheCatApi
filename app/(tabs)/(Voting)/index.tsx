@@ -47,21 +47,18 @@ export default function Voting() {
     setIsHighLightVoteDown(false);
     setIsHighLightVoteUp(false);
     setIsFav(false);
+
+    if (imgs.length === 0) getImg();
   }, [imgs]);
 
   useEffect(() => {
-    console.log('params updated');
-    if (imgs.length === 0) {
-      getImg();
-      return;
-    }
-
     getImg();
   }, [voteImgParams]);
 
   async function getImg() {
     setIsLoading(true);
     setIsLoadImgError(false);
+    console.log(voteImgParams);
     try {
       const result = await request_getImg(voteImgParams);
 

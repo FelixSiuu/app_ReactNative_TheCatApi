@@ -2,21 +2,21 @@ import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
 import { FlatItemType } from '@/app/(tabs)/(Voting)/Settings';
 import { useEffect, useState } from 'react';
 import Slider from '@react-native-community/slider';
-import { getImagesLimit } from '../config';
+import { colorMap, getImagesLimit } from '../config';
 
 type Props = {
   isVisible: boolean;
   onClose: () => void;
   content: FlatItemType;
-  // onConfirm: (data: FlatItemType) => void;
+  onConfirm: (data: FlatItemType) => void;
 };
 
 export default function VotingSettingsModal({
   isVisible,
   onClose,
   content,
-}: // onConfirm,
-Props) {
+  onConfirm,
+}: Props) {
   const [data, setData] = useState<FlatItemType>(content);
 
   useEffect(() => {
@@ -47,6 +47,7 @@ Props) {
             <Pressable
               onPress={() => {
                 onClose();
+                onConfirm(data);
               }}
             >
               <Text>OK</Text>
@@ -64,8 +65,8 @@ Props) {
               style={{ width: '100%', height: 40 }}
               minimumValue={getImagesLimit.min}
               maximumValue={getImagesLimit.max}
-              minimumTrackTintColor="#c4b9b9"
-              maximumTrackTintColor="#000000"
+              minimumTrackTintColor={colorMap['slider-minimumTrackTintColor']}
+              maximumTrackTintColor={colorMap['slider-maximumTrackTintColor']}
               value={data.original as number}
               onValueChange={handleValueChange}
             />

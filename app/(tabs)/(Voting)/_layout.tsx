@@ -7,7 +7,7 @@ export default function VotingLayout() {
       <Stack>
         <Stack.Screen
           name="index"
-          options={{ headerShown: true, title: 'Voting' }}
+          options={{ headerShown: false, title: 'Voting' }}
         />
         <Stack.Screen
           name="Settings"
