@@ -1,8 +1,8 @@
 export const subId = 'lovecatguy';
 
 export const pendingVotingPosition = {
-  left: -100,
-  right: 100,
+  left: -60,
+  right: 60,
 };
 
 export const getImagesLimit = {
@@ -18,21 +18,23 @@ export const colorMap = {
   votingBtnDisabled: '#837777',
   'vote-up': '#00a651',
   'vote-down': '#f73132',
-  'slider-minimumTrackTintColor': '#c4b9b9',
-  'slider-maximumTrackTintColor': '#ff6841',
+  'slider-minimumTrackTintColor': '#ff6841',
+  'slider-maximumTrackTintColor': '#c4b9b9',
   'settings-textDiffColor': '#e23123',
+  'settings-textWarningColor': '#e23123',
+  'settings-primaryColor': '#3f96fd',
 };
 
 export type VotingSettingsType = {
   limit: number;
-  mine_types: string; // jpg,png,gif
+  mime_types: string; // jpg,png,gif
   has_breeds: boolean | '';
   size: 'thumb' | 'small' | 'med' | 'full' | '';
 };
 
 export const defaultVotingSettings: VotingSettingsType = {
   limit: 5,
-  mine_types: '',
+  mime_types: '',
   has_breeds: '',
   size: '',
 };

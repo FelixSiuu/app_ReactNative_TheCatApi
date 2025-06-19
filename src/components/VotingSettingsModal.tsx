@@ -1,76 +1,333 @@
-import { Modal, View, Text, Pressable, StyleSheet } from 'react-native';
+import {
+  Modal,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  TextStyle,
+} from 'react-native';
 import { FlatItemType } from '@/app/(tabs)/(Voting)/Settings';
 import { useEffect, useState } from 'react';
 import Slider from '@react-native-community/slider';
 import { colorMap, getImagesLimit } from '../config';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 type Props = {
-  isVisible: boolean;
   onClose: () => void;
   content: FlatItemType;
-  onConfirm: (data: FlatItemType) => void;
+  onSubmit: (data: FlatItemType) => void;
 };
 
-export default function VotingSettingsModal({
-  isVisible,
-  onClose,
-  content,
-  onConfirm,
-}: Props) {
+export function LimitSettingsModal({ onClose, content, onSubmit }: Props) {
   const [data, setData] = useState<FlatItemType>(content);
 
-  useEffect(() => {
-    setData(content);
-  }, [content]);
-
-  function handleValueChange(value: number) {
+  function handleSliderChange(count: number) {
     setData((prev) => ({
       ...prev,
-      original: value,
-      value: value,
+      original: count,
+      label: count,
     }));
   }
 
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
+      visible={true}
       transparent={true}
-      visible={isVisible}
       onRequestClose={onClose}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.TopBtnGroup}>
-            <Pressable onPress={onClose}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[styles.button, styles.buttonCancel]}
+            >
               <Text>Cancel</Text>
-            </Pressable>
-            <Pressable
+            </TouchableOpacity>
+
+            <TouchableOpacity
               onPress={() => {
                 onClose();
-                onConfirm(data);
+                onSubmit(data);
               }}
+              style={[styles.button, styles.buttonSubmit]}
             >
-              <Text>OK</Text>
-            </Pressable>
+              <Text style={styles.buttonSubmitText}>Submit</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.contentWrapper}>
             <Text>{data.title}</Text>
-            <Text>{data.value}</Text>
+
+            <Text>{data.label}</Text>
           </View>
 
-          {data.key === 'limit' && (
-            <Slider
-              step={1}
-              style={{ width: '100%', height: 40 }}
-              minimumValue={getImagesLimit.min}
-              maximumValue={getImagesLimit.max}
-              minimumTrackTintColor={colorMap['slider-minimumTrackTintColor']}
-              maximumTrackTintColor={colorMap['slider-maximumTrackTintColor']}
-              value={data.original as number}
-              onValueChange={handleValueChange}
-            />
-          )}
+          <Slider
+            step={1}
+            style={{ width: '100%', height: 40 }}
+            minimumValue={getImagesLimit.min}
+            maximumValue={getImagesLimit.max}
+            minimumTrackTintColor={colorMap['slider-minimumTrackTintColor']}
+            maximumTrackTintColor={colorMap['slider-maximumTrackTintColor']}
+            value={data.original as number}
+            onValueChange={handleSliderChange}
+          />
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+export function MimeTypesSettingsModal({ onClose, content, onSubmit }: Props) {
+  const allImageTypesArray = ['jpg', 'png', 'gif'];
+  const [data, setData] = useState<FlatItemType>(content);
+  const [selectedArray, setSelectedArray] = useState<string[]>(
+    !content.original ? [] : content.original.split(',')
+  );
+
+  const handleCheckBoxChange = (selected: string) => {
+    setData((prev) => ({
+      ...prev,
+      original: selected,
+      label: !selected ? 'not specified' : selected,
+    }));
+  };
+
+  const checkBoxChange = (selected: string) => {
+    let newArr = selectedArray;
+
+    if (newArr.includes(selected)) {
+      newArr = newArr.filter((item) => item !== selected);
+    } else {
+      newArr = [...newArr, selected];
+    }
+
+    setSelectedArray(newArr);
+    handleCheckBoxChange(newArr.join(','));
+  };
+
+  const calcBtnTextStyles = (selected: string): TextStyle => {
+    if (selectedArray.includes(selected)) {
+      return {
+        color: colorMap['settings-primaryColor'],
+      };
+    }
+    return {};
+  };
+
+  return (
+    <Modal
+      animationType="fade"
+      visible={true}
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.TopBtnGroup}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[styles.button, styles.buttonCancel]}
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                onClose();
+                onSubmit(data);
+              }}
+              style={[styles.button, styles.buttonSubmit]}
+            >
+              <Text style={styles.buttonSubmitText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.contentWrapper}>
+            <Text>{data.title}</Text>
+
+            <Text>{data.label}</Text>
+          </View>
+
+          <View
+            style={{
+              gap: 10,
+              marginHorizontal: 30,
+              alignItems: 'flex-start',
+            }}
+          >
+            {allImageTypesArray.map((item) => (
+              <Pressable
+                style={[
+                  {
+                    width: '100%',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    gap: 10,
+                    borderBottomColor: '#e2e2e2',
+                    borderBottomWidth: 0.5,
+                    paddingVertical: 10,
+                  },
+                ]}
+                key={item}
+                onPress={() => checkBoxChange(item)}
+              >
+                {selectedArray.includes(item) ? (
+                  <Ionicons
+                    name="checkbox"
+                    size={20}
+                    color={colorMap['settings-primaryColor']}
+                  />
+                ) : (
+                  <Ionicons name="square-outline" size={20} />
+                )}
+
+                <Text style={[{ fontSize: 14 }, calcBtnTextStyles(item)]}>
+                  {item}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+type OptionState = {
+  label: string;
+  value: string;
+};
+
+export function SizeSettingsModal({ onClose, content, onSubmit }: Props) {
+  const allSizeArray: OptionState[] = [
+    {
+      label: 'all',
+      value: '',
+    },
+    {
+      label: 'thumb',
+      value: 'thumb',
+    },
+    {
+      label: 'small',
+      value: 'small',
+    },
+    {
+      label: 'med',
+      value: 'med',
+    },
+    {
+      label: 'full',
+      value: 'full',
+    },
+  ];
+  const [data, setData] = useState<FlatItemType>(content);
+  const [selected, setSelected] = useState<OptionState>({
+    label: String(content.label),
+    value: content.original,
+  });
+
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      original: selected.value,
+      label: !selected.value
+        ? 'all ( thumb, small, med, full )'
+        : selected.value,
+    }));
+  }, [selected]);
+
+  function handleOptionChange(option: OptionState) {
+    setSelected(option);
+  }
+
+  const calcBtnTextStyles = (option: OptionState): TextStyle => {
+    if (selected.value === option.value) {
+      return {
+        color: colorMap['settings-primaryColor'],
+      };
+    }
+    return {};
+  };
+
+  return (
+    <Modal
+      animationType="fade"
+      visible={true}
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.TopBtnGroup}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[styles.button, styles.buttonCancel]}
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                onClose();
+                onSubmit(data);
+              }}
+              style={[styles.button, styles.buttonSubmit]}
+            >
+              <Text style={styles.buttonSubmitText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.contentWrapper}>
+            <Text>{data.title}</Text>
+
+            <Text>{data.label}</Text>
+          </View>
+
+          <View
+            style={{
+              gap: 10,
+              marginHorizontal: 30,
+              alignItems: 'flex-start',
+            }}
+          >
+            {allSizeArray.map((item) => (
+              <Pressable
+                style={[
+                  {
+                    width: '100%',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    gap: 10,
+                    borderBottomColor: '#e2e2e2',
+                    borderBottomWidth: 0.5,
+                    paddingVertical: 10,
+                  },
+                ]}
+                key={item.value}
+                onPress={() => handleOptionChange(item)}
+              >
+                {selected.value === item.value ? (
+                  <Ionicons
+                    name="radio-button-on"
+                    size={20}
+                    color={colorMap['settings-primaryColor']}
+                  />
+                ) : (
+                  <Ionicons name="radio-button-off" size={20} />
+                )}
+
+                <Text style={[{ fontSize: 14 }, calcBtnTextStyles(item)]}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
       </View>
     </Modal>
@@ -96,8 +353,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  button: {
+    width: 80,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  buttonCancel: {
+    backgroundColor: '#cccccc',
+  },
+  buttonSubmit: {
+    backgroundColor: colorMap['settings-primaryColor'],
+  },
+  buttonSubmitText: {
+    color: 'white',
+  },
   contentWrapper: {
-    marginTop: 30,
+    marginTop: 10,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
