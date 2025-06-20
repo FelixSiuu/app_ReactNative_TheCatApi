@@ -15,13 +15,11 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import { Image } from 'expo-image';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from 'expo-router';
 import { useSettings } from '@/src/context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-const loadingGif = require('@/assets/images/loading.gif');
+import Loading from '@/src/components/Loading';
 
 type ImgState = {
   height: number;
@@ -199,13 +197,7 @@ export default function Voting() {
       ]}
     >
       {isLoading ? (
-        <Image
-          source={loadingGif}
-          style={{
-            width: 30,
-            height: 30,
-          }}
-        />
+        <Loading />
       ) : isLoadImgError.status === true ? (
         <View style={[styles.container, { gap: 20 }]}>
           <Text>{isLoadImgError.text}</Text>

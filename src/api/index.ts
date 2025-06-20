@@ -1,9 +1,17 @@
-import { VotingSettingsType } from '../types';
+import {
+  BreedId,
+  BreedsParams,
+  HasBreeds,
+  Limit,
+  MimeTypes,
+  Size,
+  VotingSettingsType,
+} from '../types';
 import Request from './request';
 
 const baseUrl = 'https://api.thecatapi.com/';
 
-// Ask for 1 Image, at full resolution
+// Ask for Images
 export const request_getImg = (params: VotingSettingsType) => {
   return Request({
     method: 'get',
@@ -73,7 +81,7 @@ export const request_getBreedsList = () => {
 };
 
 // get breed info
-export const request_getBreedInfo = (params: { breed_id: string }) => {
+export const request_getBreedInfo = (params: BreedsParams) => {
   return Request({
     method: 'get',
     url: `${baseUrl}v1/images/search`,
@@ -91,10 +99,10 @@ export const request_getCategoriesList = () => {
 
 // get filter images
 export const request_getFilterImages = (params: {
-  breed_id: string;
+  breed_id: BreedId;
   category_ids: string;
-  mime_types: string;
-  limit: string;
+  mime_types: MimeTypes;
+  limit: Limit;
 }) => {
   return Request({
     method: 'get',
