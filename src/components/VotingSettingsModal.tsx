@@ -19,6 +19,11 @@ type Props = {
   onSubmit: (data: FlatItemType) => void;
 };
 
+type OptionState = {
+  label: string | number;
+  value: string;
+};
+
 export function LimitSettingsModal({ onClose, content, onSubmit }: Props) {
   const [data, setData] = useState<FlatItemType>(content);
 
@@ -32,7 +37,7 @@ export function LimitSettingsModal({ onClose, content, onSubmit }: Props) {
 
   return (
     <Modal
-      animationType="fade"
+      animationType="none"
       visible={true}
       transparent={true}
       onRequestClose={onClose}
@@ -119,7 +124,7 @@ export function MimeTypesSettingsModal({ onClose, content, onSubmit }: Props) {
 
   return (
     <Modal
-      animationType="fade"
+      animationType="none"
       visible={true}
       transparent={true}
       onRequestClose={onClose}
@@ -197,15 +202,10 @@ export function MimeTypesSettingsModal({ onClose, content, onSubmit }: Props) {
   );
 }
 
-type OptionState = {
-  label: string;
-  value: string;
-};
-
 export function SizeSettingsModal({ onClose, content, onSubmit }: Props) {
   const allSizeArray: OptionState[] = [
     {
-      label: 'all',
+      label: 'all ( thumb, small, med, full )',
       value: '',
     },
     {
@@ -227,7 +227,7 @@ export function SizeSettingsModal({ onClose, content, onSubmit }: Props) {
   ];
   const [data, setData] = useState<FlatItemType>(content);
   const [selected, setSelected] = useState<OptionState>({
-    label: String(content.label),
+    label: content.label,
     value: content.original,
   });
 
@@ -256,7 +256,7 @@ export function SizeSettingsModal({ onClose, content, onSubmit }: Props) {
 
   return (
     <Modal
-      animationType="fade"
+      animationType="none"
       visible={true}
       transparent={true}
       onRequestClose={onClose}
@@ -296,6 +296,132 @@ export function SizeSettingsModal({ onClose, content, onSubmit }: Props) {
             }}
           >
             {allSizeArray.map((item) => (
+              <Pressable
+                style={[
+                  {
+                    width: '100%',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    gap: 10,
+                    borderBottomColor: '#e2e2e2',
+                    borderBottomWidth: 0.5,
+                    paddingVertical: 10,
+                  },
+                ]}
+                key={item.value}
+                onPress={() => handleOptionChange(item)}
+              >
+                {selected.value === item.value ? (
+                  <Ionicons
+                    name="radio-button-on"
+                    size={20}
+                    color={colorMap['settings-primaryColor']}
+                  />
+                ) : (
+                  <Ionicons name="radio-button-off" size={20} />
+                )}
+
+                <Text style={[{ fontSize: 14 }, calcBtnTextStyles(item)]}>
+                  {item.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+export function HasBreedsSettingsModal({ onClose, content, onSubmit }: Props) {
+  const allHasBreedsOptionArray: OptionState[] = [
+    {
+      label: 'random',
+      value: '',
+    },
+    {
+      label: 'yes',
+      value: 'true',
+    },
+    {
+      label: 'no',
+      value: 'false',
+    },
+  ];
+  const [data, setData] = useState<FlatItemType>(content);
+  const [selected, setSelected] = useState<OptionState>({
+    label: content.label,
+    value: content.original,
+  });
+
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      original: selected.value,
+      label: !selected.value
+        ? 'random'
+        : selected.value === 'true'
+        ? 'yes'
+        : 'no',
+    }));
+  }, [selected]);
+
+  function handleOptionChange(option: OptionState) {
+    setSelected(option);
+  }
+
+  const calcBtnTextStyles = (option: OptionState): TextStyle => {
+    if (selected.value === option.value) {
+      return {
+        color: colorMap['settings-primaryColor'],
+      };
+    }
+    return {};
+  };
+
+  return (
+    <Modal
+      animationType="none"
+      visible={true}
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.TopBtnGroup}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[styles.button, styles.buttonCancel]}
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                onClose();
+                onSubmit(data);
+              }}
+              style={[styles.button, styles.buttonSubmit]}
+            >
+              <Text style={styles.buttonSubmitText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.contentWrapper}>
+            <Text>{data.title}</Text>
+
+            <Text>{data.label}</Text>
+          </View>
+
+          <View
+            style={{
+              gap: 10,
+              marginHorizontal: 30,
+              alignItems: 'flex-start',
+            }}
+          >
+            {allHasBreedsOptionArray.map((item) => (
               <Pressable
                 style={[
                   {

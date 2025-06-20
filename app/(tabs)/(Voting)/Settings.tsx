@@ -14,9 +14,17 @@ import {
   LimitSettingsModal,
   MimeTypesSettingsModal,
   SizeSettingsModal,
+  HasBreedsSettingsModal,
 } from '@/src/components/VotingSettingsModal';
-import { colorMap, VotingSettingsType } from '@/src/config';
+import { colorMap } from '@/src/config';
 import { useRouter } from 'expo-router';
+import {
+  Limit,
+  MimeTypes,
+  HasBreeds,
+  VotingSettingsType,
+  Size,
+} from '@/src/types';
 
 type ItemData = {
   key: string;
@@ -35,48 +43,45 @@ export type FlatItemType = ItemData;
 export default function Settings() {
   const router = useRouter();
   const { settings: defaultParams, updateSettings } = useSettings();
-  const [newSettings, setNewSettings] = useState<VotingSettingsType>({
-    limit: defaultParams.limit,
-    mime_types: defaultParams.mime_types,
-    size: defaultParams.size,
-    has_breeds: defaultParams.has_breeds,
-  });
+  const [limit, setLimit] = useState<Limit>(defaultParams.limit);
+  const [mimeTypes, setMimeTypes] = useState<MimeTypes>(
+    defaultParams.mime_types
+  );
+  const [hasBreeds, setHasBreeds] = useState<HasBreeds>(
+    defaultParams.has_breeds
+  );
+  const [size, setSize] = useState<Size>(defaultParams.size);
   const [limitModalVisible, setLmitModalVisible] = useState<boolean>(false);
   const [mimeTypesModalVisible, setmimeTypesModalVisible] =
     useState<boolean>(false);
   const [sizeModalVisible, setSizeModalVisible] = useState<boolean>(false);
+  const [hasBreedsModalVisible, setHasBreedsModalVisible] =
+    useState<boolean>(false);
 
   const DATA: ItemData[] = [
     {
       key: 'limit',
       title: 'Number of images to get each time :',
-      label: newSettings.limit,
-      original: newSettings.limit,
+      label: limit,
+      original: limit,
     },
     {
       key: 'mime_types',
       title: 'Images type :',
-      label: newSettings.mime_types ? newSettings.mime_types : 'not specified',
-      original: newSettings.mime_types,
-    },
-    {
-      key: 'size',
-      title: 'Images size :',
-      label: newSettings.size
-        ? newSettings.size
-        : 'all ( thumb, small, med, full )',
-      original: newSettings.size,
+      label: mimeTypes ? mimeTypes : 'not specified',
+      original: mimeTypes,
     },
     {
       key: 'has_breeds',
       title: 'Has breeds data :',
-      label:
-        newSettings.has_breeds === ''
-          ? 'random'
-          : newSettings.has_breeds === true
-          ? 'yes'
-          : 'no',
-      original: newSettings.has_breeds,
+      label: hasBreeds === '' ? 'random' : hasBreeds === 'true' ? 'yes' : 'no',
+      original: hasBreeds,
+    },
+    {
+      key: 'size',
+      title: 'Images size :',
+      label: size ? size : 'all ( thumb, small, med, full )',
+      original: size,
     },
   ];
 
@@ -118,46 +123,35 @@ export default function Settings() {
           if (item.key === 'limit') setLmitModalVisible(true);
           if (item.key === 'mime_types') setmimeTypesModalVisible(true);
           if (item.key === 'size') setSizeModalVisible(true);
+          if (item.key === 'has_breeds') setHasBreedsModalVisible(true);
         }}
       />
     );
   };
 
   const handleReset = () => {
-    setNewSettings(defaultParams);
+    setLimit(defaultParams.limit);
+    setMimeTypes(defaultParams.mime_types);
+    setHasBreeds(defaultParams.has_breeds);
+    setSize(defaultParams.size);
   };
 
   const handleSave = () => {
-    updateSettings(newSettings);
+    if (
+      limit !== defaultParams.limit ||
+      mimeTypes !== defaultParams.mime_types ||
+      hasBreeds !== defaultParams.has_breeds ||
+      size !== defaultParams.size
+    ) {
+      const newSettings: VotingSettingsType = {
+        limit: limit,
+        mime_types: mimeTypes,
+        has_breeds: hasBreeds,
+        size: size,
+      };
+      updateSettings(newSettings);
+    }
     router.back();
-  };
-
-  const handleSubmit = (data: ItemData) => {
-    const { key, original } = data;
-
-    if (key === 'limit') {
-      setNewSettings((prev) => ({
-        ...prev,
-        limit: original,
-      }));
-      return;
-    }
-
-    if (key === 'mime_types') {
-      setNewSettings((prev) => ({
-        ...prev,
-        mime_types: original,
-      }));
-      return;
-    }
-
-    if (key === 'size') {
-      setNewSettings((prev) => ({
-        ...prev,
-        size: original,
-      }));
-      return;
-    }
   };
 
   return (
@@ -166,7 +160,7 @@ export default function Settings() {
         <LimitSettingsModal
           onClose={() => setLmitModalVisible(false)}
           content={DATA.find((item) => item.key === 'limit') as ItemData}
-          onSubmit={handleSubmit}
+          onSubmit={(data: ItemData) => setLimit(data.original)}
         />
       )}
 
@@ -174,17 +168,23 @@ export default function Settings() {
         <MimeTypesSettingsModal
           onClose={() => setmimeTypesModalVisible(false)}
           content={DATA.find((item) => item.key === 'mime_types') as ItemData}
-          onSubmit={handleSubmit}
+          onSubmit={(data: ItemData) => setMimeTypes(data.original)}
+        />
+      )}
+
+      {hasBreedsModalVisible && (
+        <HasBreedsSettingsModal
+          onClose={() => setHasBreedsModalVisible(false)}
+          content={DATA.find((item) => item.key === 'has_breeds') as ItemData}
+          onSubmit={(data: ItemData) => setHasBreeds(data.original)}
         />
       )}
 
       {sizeModalVisible && (
         <SizeSettingsModal
-          onClose={() => {
-            setSizeModalVisible(false);
-          }}
+          onClose={() => setSizeModalVisible(false)}
           content={DATA.find((item) => item.key === 'size') as ItemData}
-          onSubmit={handleSubmit}
+          onSubmit={(data: ItemData) => setSize(data.original)}
         />
       )}
 
@@ -193,13 +193,29 @@ export default function Settings() {
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
       />
+
+      {limit !== defaultParams.limit ||
+      mimeTypes !== defaultParams.mime_types ||
+      hasBreeds !== defaultParams.has_breeds ||
+      size !== defaultParams.size ? (
+        <Text style={styles.warning}>
+          Click the &quot;Apply Settings&quot; button to apply the settings
+        </Text>
+      ) : null}
+
       <View style={styles.bottomBtnGroup}>
-        <TouchableOpacity onPress={handleReset}>
+        <TouchableOpacity
+          onPress={handleReset}
+          style={[styles.button, styles.buttonReset]}
+        >
           <Text>Reset</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleSave}>
-          <Text>Save Settings</Text>
+        <TouchableOpacity
+          onPress={handleSave}
+          style={[styles.button, styles.buttonSubmit]}
+        >
+          <Text style={[styles.buttonSubmitText]}>Apply Settings</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -223,10 +239,32 @@ const styles = StyleSheet.create({
   itemTitle: {
     flex: 1,
   },
+  warning: {
+    marginTop: 20,
+    textAlign: 'center',
+    color: colorMap['settings-textDiffColor'],
+  },
   bottomBtnGroup: {
     paddingHorizontal: 10,
     marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  button: {
+    minWidth: 80,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+  },
+  buttonReset: {
+    backgroundColor: '#cccccc',
+  },
+  buttonSubmit: {
+    backgroundColor: colorMap['settings-primaryColor'],
+  },
+  buttonSubmitText: {
+    color: 'white',
   },
 });

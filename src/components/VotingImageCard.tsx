@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { pendingVotingPosition } from '../config';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = {
   isError: boolean;
@@ -44,6 +45,7 @@ export default function VotingImageCard({
   handleVoteImg,
   dragEventListener,
 }: Props) {
+  const insets = useSafeAreaInsets();
   const windowWidth = useWindowDimensions().width;
   const windowHeight = useWindowDimensions().height;
   const translateX = useSharedValue(0);
@@ -127,7 +129,7 @@ export default function VotingImageCard({
       style={{
         flex: 1,
         position: 'absolute',
-        top: 0,
+        bottom: 0,
         left: 0,
         zIndex: order,
       }}
@@ -138,15 +140,15 @@ export default function VotingImageCard({
             onPress={handlePressImage}
             style={{
               width: windowWidth,
-              height: windowHeight - 60,
+              height: windowHeight - 59 - insets.top,
               backgroundColor: 'rgba(0,0,0,0.8)',
             }}
           >
             <Image
               source={imgSource}
               style={{
-                width: windowWidth,
-                height: windowHeight - 60,
+                width: '100%',
+                height: '100%',
               }}
               contentFit={isCoverContent ? 'cover' : 'contain'}
             />

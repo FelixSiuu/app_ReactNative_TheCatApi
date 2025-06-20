@@ -1,4 +1,4 @@
-import { VotingSettingsType } from '../config';
+import { VotingSettingsType } from '../types';
 import Request from './request';
 
 const baseUrl = 'https://api.thecatapi.com/';

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react';
-import { VotingSettingsType, defaultVotingSettings } from '../config';
+import { VotingSettingsType } from '../types';
+import { defaultVotingSettings } from '../config';
 
 interface VotingSettingsContextType {
   settings: VotingSettingsType;

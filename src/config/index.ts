@@ -1,3 +1,5 @@
+import { VotingSettingsType } from '../types';
+
 export const subId = 'lovecatguy';
 
 export const pendingVotingPosition = {
@@ -23,13 +25,6 @@ export const colorMap = {
   'settings-textDiffColor': '#e23123',
   'settings-textWarningColor': '#e23123',
   'settings-primaryColor': '#3f96fd',
-};
-
-export type VotingSettingsType = {
-  limit: number;
-  mime_types: string; // jpg,png,gif
-  has_breeds: boolean | '';
-  size: 'thumb' | 'small' | 'med' | 'full' | '';
 };
 
 export const defaultVotingSettings: VotingSettingsType = {

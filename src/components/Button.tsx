@@ -39,7 +39,7 @@ export default function Button({
         <Feather name="thumbs-down" size={20} color="white" />
       )}
       {type === 'retry' && (
-        <FontAwesome name="rotate-right" size={18} color="white" />
+        <FontAwesome name="rotate-right" size={16} color="white" />
       )}
 
       {!!label && (
@@ -69,5 +69,6 @@ const styles = StyleSheet.create({
     paddingVertical: '2%',
     borderRadius: 20,
     height: 40,
+    minWidth: 100,
   },
 });
