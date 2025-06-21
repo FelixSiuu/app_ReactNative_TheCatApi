@@ -4,7 +4,7 @@ import { Stack } from 'expo-router';
 export default function VotingLayout() {
   return (
     <VotingSettingsProvider>
-      <Stack>
+      <Stack initialRouteName="index">
         <Stack.Screen
           name="index"
           options={{ headerShown: false, title: 'Voting' }}

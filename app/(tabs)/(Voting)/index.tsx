@@ -43,7 +43,7 @@ export default function Voting() {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [votedImg, setVotedImg] = useState<VotedImgState | null>(null);
   const [isVotingError, setIsVotingError] = useState<boolean>(false);
-  const [isLoadImgError, setIsLoadImgError] = useState<{
+  const [isError, setIsError] = useState<{
     status: boolean;
     text: string;
   }>({ status: false, text: '' });
@@ -55,7 +55,7 @@ export default function Voting() {
 
   async function getImg() {
     setIsLoading(true);
-    setIsLoadImgError({
+    setIsError({
       status: false,
       text: '',
     });
@@ -69,7 +69,7 @@ export default function Voting() {
       setImgs(result);
     } catch (error: any) {
       console.error(error);
-      setIsLoadImgError({
+      setIsError({
         status: true,
         text: error.message,
       });
@@ -198,9 +198,9 @@ export default function Voting() {
     >
       {isLoading ? (
         <Loading />
-      ) : isLoadImgError.status === true ? (
+      ) : isError.status === true ? (
         <View style={[styles.container, { gap: 20 }]}>
-          <Text>{isLoadImgError.text}</Text>
+          <Text>{isError.text}</Text>
           <Button
             label="Retry"
             type="retry"
