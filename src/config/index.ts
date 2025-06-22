@@ -12,6 +12,8 @@ export const getImagesLimit = {
   max: 10,
 };
 
+export const defaultErrorText = 'Something went wrong, please try again';
+
 export const colorMap = {
   primary: '#ff6841',
   tabBarActiveTintColor: '#ff6841',

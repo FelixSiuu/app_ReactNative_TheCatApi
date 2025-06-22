@@ -20,6 +20,7 @@ import { useRouter } from 'expo-router';
 import { useSettings } from '@/src/context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Loading from '@/src/components/Loading';
+import ErrorContainer from '@/src/components/ErrorContainer';
 
 type ImgState = {
   height: number;
@@ -199,18 +200,7 @@ export default function Voting() {
       {isLoading ? (
         <Loading />
       ) : isError.status === true ? (
-        <View style={[styles.container, { gap: 20 }]}>
-          <Text>{isError.text}</Text>
-          <Button
-            label="Retry"
-            type="retry"
-            onPress={() => getImg()}
-            disabled={isLoading}
-            customStyle={{
-              backgroundColor: colorMap['retry'],
-            }}
-          />
-        </View>
+        <ErrorContainer handleRetry={() => getImg()} errorText={isError.text} />
       ) : (
         <>
           {imgs.map((item, index) => {

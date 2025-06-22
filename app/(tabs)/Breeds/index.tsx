@@ -15,9 +15,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Image } from 'expo-image';
 import { colorMap } from '@/src/config';
-import Button from '@/src/components/Button';
 import Stars from '@/src/components/Stars';
-import { Link, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import ErrorContainer from '@/src/components/ErrorContainer';
 
 const fixedParams = {
   mime_types: 'jpg,png',
@@ -200,23 +200,15 @@ export default function Breeds() {
 
   if (isError.status) {
     return (
-      <View style={[styles.loadingAndErrorContainer, { gap: 20 }]}>
-        <Text>{isError.text}</Text>
-        <Button
-          label="Retry"
-          type="retry"
-          onPress={() =>
-            getBreedsInfo({
-              ...fixedParams,
-              has_breeds: 'true',
-            })
-          }
-          disabled={isLoading}
-          customStyle={{
-            backgroundColor: colorMap['retry'],
-          }}
-        />
-      </View>
+      <ErrorContainer
+        errorText={isError.text}
+        handleRetry={() =>
+          getBreedsInfo({
+            ...fixedParams,
+            has_breeds: 'true',
+          })
+        }
+      />
     );
   }
 
@@ -241,7 +233,12 @@ export default function Breeds() {
       <View style={styles.imgContainer}>
         {isLoading ? (
           <View
-            style={{ width: '100%', marginVertical: 100, alignItems: 'center' }}
+            style={{
+              width: '100%',
+              paddingVertical: 100,
+              alignItems: 'center',
+              backgroundColor: 'white',
+            }}
           >
             <Loading />
           </View>
@@ -320,12 +317,6 @@ export default function Breeds() {
 }
 
 const styles = StyleSheet.create({
-  loadingAndErrorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
   container: {
     flex: 1,
     backgroundColor: 'white',

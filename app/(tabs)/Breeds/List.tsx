@@ -1,9 +1,9 @@
 import { request_getBreedsList } from '@/src/api';
-import Button from '@/src/components/Button';
+import Empty from '@/src/components/Empty';
 import Loading from '@/src/components/Loading';
 import { colorMap } from '@/src/config';
 import { useLocalSearchParams, router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -12,11 +12,13 @@ import {
   TouchableOpacity,
   TextInput,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import ErrorContainer from '@/src/components/ErrorContainer';
 
 export default function List() {
   const { id } = useLocalSearchParams();
-  const insets = useSafeAreaInsets();
+  const inputRef = useRef<TextInput>(null);
+
   const [breedsList, setBreedList] = useState<{ [key: string]: any }[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<{
@@ -26,6 +28,7 @@ export default function List() {
   const [terms, setTerms] = useState<string>(
     breedsList?.find((item) => item.id === id)?.name || ''
   );
+  const filterList = breedsList.filter((item) => isMatchTerms(item.name));
   const alphabetList = new Set(
     breedsList.map((item) => (item.name as string).split('')[0])
   );
@@ -68,97 +71,127 @@ export default function List() {
     setTerms(text);
   }
 
+  function isMatchTerms(name: string) {
+    if (!terms) return true;
+
+    if (name.toLowerCase().indexOf(terms.toLowerCase()) !== -1) return true;
+
+    return false;
+  }
+
+  function handleFocus() {
+    inputRef.current?.focus();
+  }
+
+  function handleReset() {
+    setTerms('');
+  }
+
   useEffect(() => {
     getBreedsList();
   }, []);
 
   if (isLoading) {
-    return (
-      <View style={styles.loadingAndErrorContainer}>
-        <Loading />
-      </View>
-    );
+    return <Loading />;
   }
 
   if (isError.status) {
     return (
-      <View style={[styles.loadingAndErrorContainer, { gap: 20 }]}>
-        <Text>{isError.text}</Text>
-        <Button
-          label="Retry"
-          type="retry"
-          onPress={() => getBreedsList()}
-          disabled={isLoading}
-          customStyle={{
-            backgroundColor: colorMap['retry'],
-          }}
-        />
-      </View>
+      <ErrorContainer
+        errorText={isError.text}
+        handleRetry={() => getBreedsList()}
+      />
     );
   }
 
   return (
     <View
       style={{
-        paddingBottom: insets.bottom + 59,
+        flex: 1,
       }}
     >
       <View style={styles.inputContainer}>
+        <TouchableOpacity
+          onPress={handleFocus}
+          style={[styles.inputIcon, { left: 30 }]}
+        >
+          <MaterialIcons name="search" size={22} color="black" />
+        </TouchableOpacity>
+
         <TextInput
           style={styles.input}
           onChangeText={handleOnChange}
           value={terms}
           placeholder=""
+          ref={inputRef}
         />
+
+        {!!terms && (
+          <TouchableOpacity
+            onPress={handleReset}
+            style={[styles.inputIcon, { right: 30 }]}
+          >
+            <MaterialIcons name="highlight-remove" size={20} color="black" />
+          </TouchableOpacity>
+        )}
       </View>
 
-      <ScrollView>
-        {breedsList.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            style={[
-              styles.breedItem,
-              {
-                backgroundColor: item.id === id ? colorMap['primary'] : 'white',
-              },
-            ]}
-            onPress={() => handleToBreedInfo(item.id)}
-          >
-            <Text
-              style={[
-                {
-                  fontWeight: item.id === id ? 600 : 400,
-                  color: item.id === id ? 'white' : 'black',
-                },
-              ]}
-            >
-              {item.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      {filterList.length === 0 ? (
+        <Empty />
+      ) : (
+        <ScrollView>
+          {filterList.map((item) => {
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={[
+                  styles.breedItem,
+                  {
+                    backgroundColor:
+                      item.id === id ? colorMap['primary'] : 'white',
+                  },
+                ]}
+                onPress={() => handleToBreedInfo(item.id)}
+              >
+                <Text
+                  style={[
+                    {
+                      fontWeight: item.id === id ? 600 : 400,
+                      color: item.id === id ? 'white' : 'black',
+                    },
+                  ]}
+                >
+                  {item.name}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  loadingAndErrorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
   inputContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    position: 'relative',
     marginBottom: 10,
     backgroundColor: 'white',
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+  },
+  inputIcon: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    top: 20,
   },
   input: {
+    paddingLeft: 40,
     height: 40,
-    margin: 12,
     borderWidth: 1,
-    padding: 10,
     borderRadius: 5,
   },
   breedItem: {
