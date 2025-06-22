@@ -38,9 +38,6 @@ export default function Button({
       {type === 'vote-down' && (
         <Feather name="thumbs-down" size={20} color="white" />
       )}
-      {type === 'retry' && (
-        <FontAwesome name="rotate-right" size={16} color="white" />
-      )}
 
       {!!label && (
         <Text

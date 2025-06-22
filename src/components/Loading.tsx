@@ -1,6 +1,5 @@
-import { Image, View } from 'react-native';
-
-const loadingGif = require('@/assets/images/loading.gif');
+import { ActivityIndicator, View } from 'react-native';
+import { colorMap } from '../config';
 
 export default function Loading() {
   return (
@@ -12,13 +11,7 @@ export default function Loading() {
         backgroundColor: 'white',
       }}
     >
-      <Image
-        source={loadingGif}
-        style={{
-          width: 30,
-          height: 30,
-        }}
-      />
+      <ActivityIndicator size={'large'} color={colorMap['primary']} />
     </View>
   );
 }
