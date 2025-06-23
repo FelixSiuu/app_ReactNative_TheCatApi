@@ -8,13 +8,7 @@ import Button from '@/src/components/Button';
 import VotingImageCard from '@/src/components/VotingImageCard';
 import { colorMap, pendingVotingPosition, subId } from '@/src/config';
 import { useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { View, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from 'expo-router';
 import { useSettings } from '@/src/context';

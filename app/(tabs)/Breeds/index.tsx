@@ -213,106 +213,110 @@ export default function Breeds() {
   }
 
   return (
-    <ScrollView
+    <View
       style={[
         {
           paddingTop: insets.top + 30,
-          paddingBottom: insets.bottom + 30,
+          paddingBottom: insets.bottom,
           paddingHorizontal: 20,
         },
         styles.container,
       ]}
     >
-      <TouchableHighlight onPress={handleToBreedsList}>
-        <View style={styles.toBreedsList}>
-          <Text style={styles.toBreedsListText}>{selected?.name}</Text>
-          <FontAwesome name="caret-down" size={16} color="black" />
-        </View>
-      </TouchableHighlight>
-
-      <View style={styles.imgContainer}>
-        {isLoading ? (
-          <View
-            style={{
-              width: '100%',
-              paddingVertical: 100,
-              alignItems: 'center',
-              backgroundColor: 'white',
-            }}
-          >
-            <Loading />
+      <ScrollView style={{ flex: 1 }}>
+        <TouchableHighlight onPress={handleToBreedsList}>
+          <View style={styles.toBreedsList}>
+            <Text style={styles.toBreedsListText}>{selected?.name}</Text>
+            <FontAwesome name="caret-down" size={16} color="black" />
           </View>
-        ) : (
-          <Image
-            source={img.url}
-            style={{
-              width: '100%',
-              height: 'auto',
-              aspectRatio: img.width / img.height,
-            }}
-          />
-        )}
+        </TouchableHighlight>
 
-        <TouchableOpacity
-          style={styles.rotateButton}
-          onPress={handleGetImageAgain}
-          disabled={isLoading}
-        >
-          <FontAwesome6 name="rotate" size={16} color={colorMap['retry']} />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.imgContainer}>
+          {isLoading ? (
+            <View
+              style={{
+                width: '100%',
+                paddingVertical: 100,
+                alignItems: 'center',
+                backgroundColor: 'white',
+              }}
+            >
+              <Loading />
+            </View>
+          ) : (
+            <Image
+              source={img.url}
+              style={{
+                width: '100%',
+                height: 'auto',
+                aspectRatio: img.width / img.height,
+              }}
+            />
+          )}
 
-      <View style={styles.info}>
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: 600,
-          }}
-        >
-          {selected?.name}
-        </Text>
-        {!selected?.alt_names ? null : (
+          <TouchableOpacity
+            style={styles.rotateButton}
+            onPress={handleGetImageAgain}
+            disabled={isLoading}
+          >
+            <FontAwesome6 name="rotate" size={16} color={colorMap['retry']} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.info}>
           <Text
             style={{
-              fontSize: 14,
+              fontSize: 24,
               fontWeight: 600,
             }}
           >
-            ( {selected?.alt_names} )
+            {selected?.name}
           </Text>
-        )}
+          {!selected?.alt_names ? null : (
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: 600,
+              }}
+            >
+              ( {selected?.alt_names} )
+            </Text>
+          )}
 
-        <Text>Origin: {selected?.origin}</Text>
+          <Text>Origin: {selected?.origin}</Text>
 
-        <Text style={{ textAlign: 'center' }}>
-          Temperament: {selected?.temperament}
-        </Text>
+          <Text style={{ textAlign: 'center' }}>
+            Temperament: {selected?.temperament}
+          </Text>
 
-        <Text style={{ textAlign: 'justify', color: '#808080', fontSize: 12 }}>
-          {selected?.description}
-        </Text>
+          <Text
+            style={{ textAlign: 'justify', color: '#808080', fontSize: 12 }}
+          >
+            {selected?.description}
+          </Text>
 
-        <Text style={{ textAlign: 'center', fontSize: 12 }}>
-          {selected?.weight?.metric} kg / {selected?.weight?.imperial} oz
-        </Text>
+          <Text style={{ textAlign: 'center', fontSize: 12 }}>
+            {selected?.weight?.metric} kg / {selected?.weight?.imperial} oz
+          </Text>
 
-        <Text style={{ textAlign: 'center', fontSize: 12 }}>
-          {selected?.life_span} average life span
-        </Text>
+          <Text style={{ textAlign: 'center', fontSize: 12 }}>
+            {selected?.life_span} average life span
+          </Text>
+        </View>
 
         <View style={styles.infoBottomBorder}></View>
-      </View>
 
-      {dataArray.map((item, index) => {
-        if (!item) return;
-        return (
-          <View key={index} style={styles.dataItem}>
-            <Text>{item.label}</Text>
-            <Stars value={item.value} />
-          </View>
-        );
-      })}
-    </ScrollView>
+        {dataArray.map((item, index) => {
+          if (!item) return;
+          return (
+            <View key={index} style={styles.dataItem}>
+              <Text>{item.label}</Text>
+              <Stars value={item.value} />
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -320,7 +324,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    position: 'relative',
   },
   toBreedsList: {
     flexDirection: 'row',
@@ -367,10 +370,9 @@ const styles = StyleSheet.create({
     gap: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 30,
   },
   infoBottomBorder: {
-    marginTop: 10,
+    marginVertical: 20,
     width: '100%',
     height: 5,
     backgroundColor: '#f2f2f2',
@@ -379,14 +381,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  toWiki: {
-    marginVertical: 30,
-    width: '100%',
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colorMap['primary'],
-    borderRadius: 5,
   },
 });

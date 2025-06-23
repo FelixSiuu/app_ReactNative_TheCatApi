@@ -5,12 +5,12 @@ import { colorMap } from '@/src/config';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ScrollView,
   StyleSheet,
   View,
   Text,
   TouchableOpacity,
   TextInput,
+  FlatList,
 } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import ErrorContainer from '@/src/components/ErrorContainer';
@@ -58,13 +58,17 @@ export default function List() {
     }
   }
 
-  function handleToBreedInfo(id: string) {
-    router.replace({
-      pathname: '/Breeds',
-      params: {
-        id: id,
-      },
-    });
+  function handleToBreedInfo(selectedID: string) {
+    if (selectedID === id) {
+      router.back();
+    } else {
+      router.replace({
+        pathname: '/Breeds',
+        params: {
+          id: selectedID,
+        },
+      });
+    }
   }
 
   function handleOnChange(text: string) {
@@ -131,43 +135,80 @@ export default function List() {
             onPress={handleReset}
             style={[styles.inputIcon, { right: 30 }]}
           >
-            <MaterialIcons name="highlight-remove" size={20} color="black" />
+            <MaterialIcons name="highlight-remove" size={20} color="#858585" />
           </TouchableOpacity>
         )}
       </View>
 
-      {filterList.length === 0 ? (
-        <Empty />
-      ) : (
-        <ScrollView>
-          {filterList.map((item) => {
-            return (
-              <TouchableOpacity
-                key={item.id}
+      <FlatList
+        data={filterList}
+        ListEmptyComponent={
+          <View style={{ marginTop: 100 }}>
+            <Empty />
+          </View>
+        }
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.breedItem,
+                {
+                  backgroundColor:
+                    item.id === id ? colorMap['primary'] : 'white',
+                },
+              ]}
+              onPress={() => handleToBreedInfo(item.id)}
+            >
+              <Text
                 style={[
-                  styles.breedItem,
                   {
-                    backgroundColor:
-                      item.id === id ? colorMap['primary'] : 'white',
+                    fontWeight: item.id === id ? 600 : 400,
+                    color: item.id === id ? 'white' : 'black',
                   },
                 ]}
-                onPress={() => handleToBreedInfo(item.id)}
               >
-                <Text
-                  style={[
-                    {
-                      fontWeight: item.id === id ? 600 : 400,
-                      color: item.id === id ? 'white' : 'black',
-                    },
-                  ]}
-                >
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      )}
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        }}
+      />
+
+      {/* <FlatList
+        data={filterList}
+        ListEmptyComponent={<Empty />}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              key={item.id}
+              style={[
+                styles.breedItem,
+                {
+                  backgroundColor:
+                    item.id === id ? colorMap['primary'] : 'white',
+                },
+              ]}
+              onPress={() => handleToBreedInfo(item.id)}
+            >
+              <Text
+                style={[
+                  {
+                    fontWeight: item.id === id ? 600 : 400,
+                    color: item.id === id ? 'white' : 'black',
+                  },
+                ]}
+              >
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          );
+        }}
+      /> */}
     </View>
   );
 }
