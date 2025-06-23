@@ -20,9 +20,10 @@ export const colorMap = {
   disabled: '#cbcbcb',
   retry: '#ff6841',
   settings: '#fea832',
+  history: '#977fe7',
   'fav-active': '#f70707',
   'fav-disabled': '#cbcbcb',
-  'vote-disabled': '#837777',
+  'vote-disabled': '#4b4b4b',
   'vote-up': '#4ae395',
   'vote-down': '#8fc2ff',
   'slider-minimumTrackTintColor': '#ff6841',
@@ -33,8 +34,9 @@ export const colorMap = {
 };
 
 export const defaultVotingSettings: VotingSettingsType = {
-  limit: 5,
+  limit: '5',
   mime_types: '',
   has_breeds: '',
   size: '',
+  category_ids: '',
 };

@@ -13,6 +13,10 @@ export default function VotingLayout() {
           name="Settings"
           options={{ headerShown: true, title: 'Settings' }}
         />
+        <Stack.Screen
+          name="History"
+          options={{ headerShown: false, title: 'History' }}
+        />
       </Stack>
     </VotingSettingsProvider>
   );

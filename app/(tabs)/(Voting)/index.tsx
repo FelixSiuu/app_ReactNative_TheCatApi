@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRouter } from 'expo-router';
 import { useSettings } from '@/src/context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -170,6 +171,12 @@ export default function Voting() {
     });
   }
 
+  function toHistory() {
+    router.push({
+      pathname: '/History',
+    });
+  }
+
   useEffect(() => {
     setIsHighLightVoteDown(false);
     setIsHighLightVoteUp(false);
@@ -224,7 +231,7 @@ export default function Voting() {
             style={styles.otherButtonWrapper}
             onPress={() => toSettings()}
           >
-            <Ionicons name="settings" size={26} color={colorMap['settings']} />
+            <Ionicons name="settings" size={24} color={colorMap['settings']} />
           </TouchableOpacity>
 
           <VotingButton
@@ -240,6 +247,24 @@ export default function Voting() {
             }
             iconColor={isHighLightVoteDown ? 'white' : colorMap['vote-down']}
           />
+
+          <TouchableOpacity
+            style={styles.otherButtonWrapper}
+            disabled={isLoading || !imgs.length || isSubmitting}
+            onPress={() => {
+              if (!isFav && !favid) {
+                favImg();
+              } else {
+                delFavImg();
+              }
+            }}
+          >
+            <AntDesign
+              name={isFav ? 'heart' : 'hearto'}
+              size={20}
+              color={colorMap['fav-active']}
+            />
+          </TouchableOpacity>
 
           <VotingButton
             type="vote-up"
@@ -258,18 +283,12 @@ export default function Voting() {
           <TouchableOpacity
             style={styles.otherButtonWrapper}
             disabled={isLoading || !imgs.length || isSubmitting}
-            onPress={() => {
-              if (!isFav && !favid) {
-                favImg();
-              } else {
-                delFavImg();
-              }
-            }}
+            onPress={toHistory}
           >
-            <AntDesign
-              name={isFav ? 'heart' : 'hearto'}
+            <FontAwesome5
+              name="history"
               size={20}
-              color={colorMap['fav-active']}
+              color={colorMap['history']}
             />
           </TouchableOpacity>
         </View>
@@ -292,7 +311,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: 12,
     paddingBottom: 12,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',

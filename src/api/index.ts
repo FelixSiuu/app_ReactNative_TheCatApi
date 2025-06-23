@@ -1,18 +1,25 @@
 import {
   BreedId,
   BreedsParams,
+  CategoriesId,
   HasBreeds,
   Limit,
   MimeTypes,
+  Order,
   Size,
-  VotingSettingsType,
 } from '../types';
 import Request from './request';
 
 const baseUrl = 'https://api.thecatapi.com/';
 
-// Ask for Images
-export const request_getImg = (params: VotingSettingsType) => {
+// search image
+export const request_getImg = (params: {
+  limit: Limit;
+  mime_types: MimeTypes;
+  has_breeds: HasBreeds;
+  size: Size;
+  category_ids: CategoriesId;
+}) => {
   return Request({
     method: 'get',
     url: `${baseUrl}v1/images/search`,
@@ -63,11 +70,24 @@ export const request_deleteFav = ({
 // get fav list
 export const request_getFavList = (params: {
   sub_id: string;
-  limit?: number;
+  limit: Limit;
+  order: Order;
 }) => {
   return Request({
     method: 'get',
     url: `${baseUrl}v1/favourites`,
+    params,
+  });
+};
+
+// get vote history
+export const request_getVoteHistory = (params: {
+  limit: Limit;
+  order: Order;
+}) => {
+  return Request({
+    method: 'get',
+    url: `${baseUrl}v1/votes`,
     params,
   });
 };

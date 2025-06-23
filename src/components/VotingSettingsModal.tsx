@@ -7,7 +7,7 @@ import {
   Pressable,
   TextStyle,
 } from 'react-native';
-import { FlatItemType } from '@/app/(tabs)/(Voting)/Settings';
+import { ItemData, CategoryItem } from '@/app/(tabs)/(Voting)/Settings';
 import { useEffect, useState } from 'react';
 import Slider from '@react-native-community/slider';
 import { colorMap, getImagesLimit } from '../config';
@@ -15,23 +15,27 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 type Props = {
   onClose: () => void;
-  content: FlatItemType;
-  onSubmit: (data: FlatItemType) => void;
+  content: ItemData;
+  onSubmit: (data: ItemData) => void;
 };
 
 type OptionState = {
-  label: string | number;
+  label: string;
   value: string;
 };
 
+type CategorySettingsProps = Props & {
+  list: CategoryItem[];
+};
+
 export function LimitSettingsModal({ onClose, content, onSubmit }: Props) {
-  const [data, setData] = useState<FlatItemType>(content);
+  const [data, setData] = useState<ItemData>(content);
 
   function handleSliderChange(count: number) {
     setData((prev) => ({
       ...prev,
-      original: count,
-      label: count,
+      original: String(count),
+      label: String(count),
     }));
   }
 
@@ -76,7 +80,7 @@ export function LimitSettingsModal({ onClose, content, onSubmit }: Props) {
             maximumValue={getImagesLimit.max}
             minimumTrackTintColor={colorMap['slider-minimumTrackTintColor']}
             maximumTrackTintColor={colorMap['slider-maximumTrackTintColor']}
-            value={data.original as number}
+            value={Number(data.original)}
             onValueChange={handleSliderChange}
           />
         </View>
@@ -87,7 +91,7 @@ export function LimitSettingsModal({ onClose, content, onSubmit }: Props) {
 
 export function MimeTypesSettingsModal({ onClose, content, onSubmit }: Props) {
   const allImageTypesArray = ['jpg', 'png', 'gif'];
-  const [data, setData] = useState<FlatItemType>(content);
+  const [data, setData] = useState<ItemData>(content);
   const [selectedArray, setSelectedArray] = useState<string[]>(
     !content.original ? [] : content.original.split(',')
   );
@@ -225,7 +229,7 @@ export function SizeSettingsModal({ onClose, content, onSubmit }: Props) {
       value: 'full',
     },
   ];
-  const [data, setData] = useState<FlatItemType>(content);
+  const [data, setData] = useState<ItemData>(content);
   const [selected, setSelected] = useState<OptionState>({
     label: content.label,
     value: content.original,
@@ -349,7 +353,7 @@ export function HasBreedsSettingsModal({ onClose, content, onSubmit }: Props) {
       value: 'false',
     },
   ];
-  const [data, setData] = useState<FlatItemType>(content);
+  const [data, setData] = useState<ItemData>(content);
   const [selected, setSelected] = useState<OptionState>({
     label: content.label,
     value: content.original,
@@ -450,6 +454,126 @@ export function HasBreedsSettingsModal({ onClose, content, onSubmit }: Props) {
 
                 <Text style={[{ fontSize: 14 }, calcBtnTextStyles(item)]}>
                   {item.label}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+export function CategorySettingsModal({
+  onClose,
+  content,
+  onSubmit,
+  list,
+}: CategorySettingsProps) {
+  const allCategoryOptionList = [
+    {
+      id: '',
+      name: 'not specified',
+    },
+    ...list,
+  ];
+  const [data, setData] = useState<ItemData>(content);
+  const [selected, setSelected] = useState<CategoryItem>({
+    id: content.original,
+    name: content.label,
+  });
+
+  useEffect(() => {
+    setData((prev) => ({
+      ...prev,
+      original: selected.id,
+      label: selected.name,
+    }));
+  }, [selected]);
+
+  function handleOptionChange(option: CategoryItem) {
+    setSelected(option);
+  }
+
+  const calcBtnTextStyles = (option: CategoryItem): TextStyle => {
+    if (selected.id === option.id) {
+      return {
+        color: colorMap['settings-primaryColor'],
+      };
+    }
+    return {};
+  };
+
+  return (
+    <Modal
+      animationType="none"
+      visible={true}
+      transparent={true}
+      onRequestClose={onClose}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.TopBtnGroup}>
+            <TouchableOpacity
+              onPress={onClose}
+              style={[styles.button, styles.buttonCancel]}
+            >
+              <Text>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                onClose();
+                onSubmit(data);
+              }}
+              style={[styles.button, styles.buttonSubmit]}
+            >
+              <Text style={styles.buttonSubmitText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.contentWrapper}>
+            <Text>{data.title}</Text>
+
+            <Text>{data.label}</Text>
+          </View>
+
+          <View
+            style={{
+              gap: 10,
+              marginHorizontal: 30,
+              alignItems: 'flex-start',
+            }}
+          >
+            {allCategoryOptionList.map((item) => (
+              <Pressable
+                style={[
+                  {
+                    width: '100%',
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    gap: 10,
+                    borderBottomColor: '#e2e2e2',
+                    borderBottomWidth: 0.5,
+                    paddingVertical: 10,
+                  },
+                ]}
+                key={item.id}
+                onPress={() => handleOptionChange(item)}
+              >
+                {selected.id === item.id ? (
+                  <Ionicons
+                    name="radio-button-on"
+                    size={20}
+                    color={colorMap['settings-primaryColor']}
+                  />
+                ) : (
+                  <Ionicons name="radio-button-off" size={20} />
+                )}
+
+                <Text style={[{ fontSize: 14 }, calcBtnTextStyles(item)]}>
+                  {item.name}
                 </Text>
               </Pressable>
             ))}

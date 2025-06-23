@@ -9,12 +9,13 @@ import {
   TextStyle,
 } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   LimitSettingsModal,
   MimeTypesSettingsModal,
   SizeSettingsModal,
   HasBreedsSettingsModal,
+  CategorySettingsModal,
 } from '@/src/components/VotingSettingsModal';
 import { colorMap } from '@/src/config';
 import { useRouter } from 'expo-router';
@@ -24,21 +25,21 @@ import {
   HasBreeds,
   VotingSettingsType,
   Size,
+  CategoriesId,
 } from '@/src/types';
+import { request_getCategoriesList } from '@/src/api';
 
-type ItemData = {
+export type ItemData = {
   key: string;
   title: string;
-  label: string | number;
+  label: string;
   original: any;
 };
 
-type ItemProps = {
-  item: ItemData;
-  onPress: () => void;
+export type CategoryItem = {
+  id: string;
+  name: string;
 };
-
-export type FlatItemType = ItemData;
 
 export default function Settings() {
   const router = useRouter();
@@ -51,12 +52,35 @@ export default function Settings() {
     defaultParams.has_breeds
   );
   const [size, setSize] = useState<Size>(defaultParams.size);
+  const [categoryId, setCategoryId] = useState<CategoriesId>(
+    defaultParams.category_ids
+  );
+  const [categoryList, setCategoryList] = useState<CategoryItem[] | null>(null);
   const [limitModalVisible, setLmitModalVisible] = useState<boolean>(false);
   const [mimeTypesModalVisible, setmimeTypesModalVisible] =
     useState<boolean>(false);
   const [sizeModalVisible, setSizeModalVisible] = useState<boolean>(false);
   const [hasBreedsModalVisible, setHasBreedsModalVisible] =
     useState<boolean>(false);
+  const [categoryModalVisible, setCategoryModalVisible] =
+    useState<boolean>(false);
+
+  async function getCategoryList() {
+    try {
+      const result = await request_getCategoriesList();
+
+      if (!Array.isArray(result)) {
+        throw new Error(result.message || 'Error!');
+      }
+      setCategoryList(result);
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  }
+
+  useEffect(() => {
+    getCategoryList();
+  }, []);
 
   const DATA: ItemData[] = [
     {
@@ -71,21 +95,29 @@ export default function Settings() {
       label: mimeTypes ? mimeTypes : 'not specified',
       original: mimeTypes,
     },
-    {
-      key: 'has_breeds',
-      title: 'Has breeds data :',
-      label: hasBreeds === '' ? 'random' : hasBreeds === 'true' ? 'yes' : 'no',
-      original: hasBreeds,
-    },
+    // {
+    //   key: 'has_breeds',
+    //   title: 'Has breeds data :',
+    //   label: hasBreeds === '' ? 'random' : hasBreeds === 'true' ? 'yes' : 'no',
+    //   original: hasBreeds,
+    // },
     {
       key: 'size',
       title: 'Images size :',
       label: size ? size : 'all ( thumb, small, med, full )',
       original: size,
     },
+    {
+      key: 'category_ids',
+      title: 'Category :',
+      label: categoryId
+        ? categoryList?.find((item) => item.id === categoryId)?.name ?? ''
+        : 'not specified',
+      original: categoryId,
+    },
   ];
 
-  const Item = ({ onPress, item }: ItemProps) => {
+  const Item = ({ onPress, item }: { onPress: () => void; item: ItemData }) => {
     return (
       <TouchableHighlight onPress={onPress}>
         <View style={styles.settingItem}>
@@ -109,6 +141,7 @@ export default function Settings() {
       case key === 'mime_types' && original !== defaultParams.mime_types:
       case key === 'size' && original !== defaultParams.size:
       case key === 'has_breeds' && original !== defaultParams.has_breeds:
+      case key === 'category_ids' && original !== defaultParams.category_ids:
         return textDiffStyleObject;
       default:
         return {};
@@ -124,6 +157,7 @@ export default function Settings() {
           if (item.key === 'mime_types') setmimeTypesModalVisible(true);
           if (item.key === 'size') setSizeModalVisible(true);
           if (item.key === 'has_breeds') setHasBreedsModalVisible(true);
+          if (item.key === 'category_ids') setCategoryModalVisible(true);
         }}
       />
     );
@@ -134,6 +168,7 @@ export default function Settings() {
     setMimeTypes(defaultParams.mime_types);
     setHasBreeds(defaultParams.has_breeds);
     setSize(defaultParams.size);
+    setCategoryId(defaultParams.category_ids);
   };
 
   const handleSave = () => {
@@ -141,16 +176,19 @@ export default function Settings() {
       limit !== defaultParams.limit ||
       mimeTypes !== defaultParams.mime_types ||
       hasBreeds !== defaultParams.has_breeds ||
-      size !== defaultParams.size
+      size !== defaultParams.size ||
+      categoryId !== defaultParams.category_ids
     ) {
       const newSettings: VotingSettingsType = {
         limit: limit,
         mime_types: mimeTypes,
         has_breeds: hasBreeds,
         size: size,
+        category_ids: categoryId,
       };
       updateSettings(newSettings);
     }
+
     router.back();
   };
 
@@ -188,11 +226,16 @@ export default function Settings() {
         />
       )}
 
-      <FlatList
-        data={DATA}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.key}
-      />
+      {categoryModalVisible && categoryList && (
+        <CategorySettingsModal
+          onClose={() => setCategoryModalVisible(false)}
+          content={DATA.find((item) => item.key === 'category_ids') as ItemData}
+          onSubmit={(data: ItemData) => setCategoryId(data.original)}
+          list={categoryList}
+        />
+      )}
+
+      <FlatList data={DATA} renderItem={renderItem} />
 
       {limit !== defaultParams.limit ||
       mimeTypes !== defaultParams.mime_types ||
