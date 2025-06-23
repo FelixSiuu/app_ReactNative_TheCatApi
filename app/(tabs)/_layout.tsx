@@ -22,10 +22,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="(Voting)"
         options={{
-          title: 'Voting',
+          title: 'Swipe',
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
-              name={focused ? 'thumbs-up-down' : 'thumbs-up-down-outline'}
+              name={focused ? 'cards' : 'cards-outline'}
               size={24}
               color={color}
             />

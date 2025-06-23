@@ -40,24 +40,22 @@ export default function ErrorContainer({
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: 10,
-          paddingHorizontal: '10%',
-          paddingVertical: '2%',
+          gap: 6,
           borderRadius: 20,
           height: 40,
-          minWidth: 100,
+          width: 100,
           borderWidth: 1,
           borderColor: colorMap['retry'],
         }}
       >
-        <FontAwesome name="rotate-right" size={16} color={colorMap['retry']} />
+        <FontAwesome name="rotate-right" size={14} color={colorMap['retry']} />
 
         <Text
           style={{
             color: colorMap['retry'],
             fontWeight: 400,
             lineHeight: 16,
-            fontSize: 16,
+            fontSize: 14,
           }}
         >
           Try Again

@@ -4,17 +4,18 @@ import {
   request_saveFav,
   request_vote,
 } from '@/src/api';
-import Button from '@/src/components/Button';
-import VotingImageCard from '@/src/components/VotingImageCard';
 import { colorMap, pendingVotingPosition, subId } from '@/src/config';
 import { useEffect, useState } from 'react';
-import { View, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useSettings } from '@/src/context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Loading from '@/src/components/Loading';
 import ErrorContainer from '@/src/components/ErrorContainer';
+import VotingButton from '@/src/components/VotingButton';
+import VotingImageCard from '@/src/components/VotingImageCard';
 
 type ImgState = {
   height: number;
@@ -218,49 +219,42 @@ export default function Voting() {
         </>
       )}
       <View style={styles.bottomBtnGroup}>
-        <View
-          style={[
-            styles.buttonContainer,
-            {
-              justifyContent: 'flex-end',
-            },
-          ]}
-        >
-          <Pressable
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
             style={styles.otherButtonWrapper}
             onPress={() => toSettings()}
           >
-            <AntDesign name="setting" size={26} color="black" />
-          </Pressable>
-          <Button
-            label="NOPE IT"
+            <Ionicons name="settings" size={26} color={colorMap['settings']} />
+          </TouchableOpacity>
+
+          <VotingButton
             type="vote-down"
             onPress={() => voteImg({ voteValue: 0 })}
             disabled={isLoading || !imgs.length || isSubmitting}
-            customStyle={{
-              backgroundColor: isLoading
+            buttonBgColor={
+              isLoading
                 ? colorMap['disabled']
                 : isHighLightVoteDown
                 ? colorMap['vote-down']
-                : colorMap['votingBtnDisabled'],
-            }}
+                : colorMap['vote-disabled']
+            }
+            iconColor={isHighLightVoteDown ? 'white' : colorMap['vote-down']}
           />
-        </View>
 
-        <View style={styles.buttonContainer}>
-          <Button
-            label="LOVE IT"
+          <VotingButton
             type="vote-up"
             onPress={() => voteImg({ voteValue: 1 })}
             disabled={isLoading || !imgs.length || isSubmitting}
-            customStyle={{
-              backgroundColor: isLoading
+            buttonBgColor={
+              isLoading
                 ? colorMap['disabled']
                 : isHighLightVoteUp
                 ? colorMap['vote-up']
-                : colorMap['votingBtnDisabled'],
-            }}
+                : colorMap['vote-disabled']
+            }
+            iconColor={isHighLightVoteUp ? 'white' : colorMap['vote-up']}
           />
+
           <TouchableOpacity
             style={styles.otherButtonWrapper}
             disabled={isLoading || !imgs.length || isSubmitting}
@@ -272,11 +266,11 @@ export default function Voting() {
               }
             }}
           >
-            {isFav ? (
-              <AntDesign name="heart" size={20} color="#f70707" />
-            ) : (
-              <AntDesign name="hearto" size={20} color="black" />
-            )}
+            <AntDesign
+              name={isFav ? 'heart' : 'hearto'}
+              size={20}
+              color={colorMap['fav-active']}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -298,7 +292,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: 12,
     paddingBottom: 12,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
@@ -308,6 +302,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
     gap: '5%',
   },

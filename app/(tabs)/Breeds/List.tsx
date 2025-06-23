@@ -18,20 +18,17 @@ import ErrorContainer from '@/src/components/ErrorContainer';
 export default function List() {
   const { id } = useLocalSearchParams();
   const inputRef = useRef<TextInput>(null);
-
   const [breedsList, setBreedList] = useState<{ [key: string]: any }[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<{
     status: boolean;
     text: string;
   }>({ status: false, text: '' });
-  const [terms, setTerms] = useState<string>(
-    breedsList?.find((item) => item.id === id)?.name || ''
-  );
+  const [terms, setTerms] = useState<string>('');
   const filterList = breedsList.filter((item) => isMatchTerms(item.name));
-  const alphabetList = new Set(
-    breedsList.map((item) => (item.name as string).split('')[0])
-  );
+  // const alphabetList = new Set(
+  //   breedsList.map((item) => (item.name as string).split('')[0])
+  // );
 
   async function getBreedsList() {
     setIsLoading(true);
@@ -76,9 +73,8 @@ export default function List() {
   }
 
   function isMatchTerms(name: string) {
-    if (!terms) return true;
-
-    if (name.toLowerCase().indexOf(terms.toLowerCase()) !== -1) return true;
+    if (!terms || name.toLowerCase().indexOf(terms.toLowerCase()) !== -1)
+      return true;
 
     return false;
   }
@@ -142,15 +138,18 @@ export default function List() {
 
       <FlatList
         data={filterList}
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+        }}
         ListEmptyComponent={
           <View style={{ marginTop: 100 }}>
             <Empty />
           </View>
         }
-        style={{
-          flex: 1,
-          backgroundColor: 'white',
-        }}
+        ItemSeparatorComponent={() => (
+          <View style={styles.ItemSeparator}></View>
+        )}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
@@ -178,37 +177,6 @@ export default function List() {
           );
         }}
       />
-
-      {/* <FlatList
-        data={filterList}
-        ListEmptyComponent={<Empty />}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity
-              key={item.id}
-              style={[
-                styles.breedItem,
-                {
-                  backgroundColor:
-                    item.id === id ? colorMap['primary'] : 'white',
-                },
-              ]}
-              onPress={() => handleToBreedInfo(item.id)}
-            >
-              <Text
-                style={[
-                  {
-                    fontWeight: item.id === id ? 600 : 400,
-                    color: item.id === id ? 'white' : 'black',
-                  },
-                ]}
-              >
-                {item.name}
-              </Text>
-            </TouchableOpacity>
-          );
-        }}
-      /> */}
     </View>
   );
 }
@@ -238,7 +206,6 @@ const styles = StyleSheet.create({
   breedItem: {
     paddingHorizontal: 10,
     paddingVertical: 20,
-    borderBottomColor: '#e2e2e2',
-    borderBottomWidth: 0.5,
   },
+  ItemSeparator: { backgroundColor: '#e2e2e2', height: 1 },
 });
