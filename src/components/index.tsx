@@ -1,6 +1,6 @@
 import Empty from './Empty';
 import ErrorContainer from './ErrorContainer';
-import HistoryModal from './HistoryModal';
+import RecordsModal from './RecordsModal';
 import Loading from './Loading';
 import Stars from './Stars';
 import VotingButton from './VotingButton';
@@ -16,7 +16,7 @@ import {
 export {
   Empty,
   ErrorContainer,
-  HistoryModal,
+  RecordsModal,
   Loading,
   Stars,
   VotingButton,

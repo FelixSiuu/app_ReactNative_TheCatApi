@@ -1,10 +1,10 @@
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
-import { request_getVoteHistory, request_vote } from '@/src/api';
+import { request_getVotingRecords, request_vote } from '@/src/api';
 import { colorMap, subId } from '@/src/config';
 import { useEffect, useState } from 'react';
 import { Image, ImageSource } from 'expo-image';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Empty, ErrorContainer, HistoryModal, Loading } from '@/src/components';
+import { Empty, ErrorContainer, RecordsModal, Loading } from '@/src/components';
 
 export type ListItem = {
   id: number;
@@ -19,7 +19,7 @@ export type ListItem = {
   };
 };
 
-export default function History() {
+export default function Records() {
   const [list, setList] = useState<ListItem[]>([]);
   const [selected, setSelected] = useState<ListItem | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -30,7 +30,7 @@ export default function History() {
   }>({ status: false, text: '' });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  async function getVoteHistory() {
+  async function getVotingRecords() {
     setIsLoading(true);
     setIsError({
       status: false,
@@ -38,7 +38,7 @@ export default function History() {
     });
 
     try {
-      const result = await request_getVoteHistory({
+      const result = await request_getVotingRecords({
         limit: '10',
         order: 'DESC',
       });
@@ -76,7 +76,7 @@ export default function History() {
 
       if (result.message === 'SUCCESS') {
         setIsModalVisible(false);
-        getVoteHistory();
+        getVotingRecords();
       } else {
         throw new Error(result.message || 'Error !');
       }
@@ -88,7 +88,7 @@ export default function History() {
   }
 
   useEffect(() => {
-    getVoteHistory();
+    getVotingRecords();
   }, []);
 
   function handleOpenModal(item: ListItem) {
@@ -108,7 +108,7 @@ export default function History() {
     return (
       <ErrorContainer
         errorText={isError.text}
-        handleRetry={() => getVoteHistory()}
+        handleRetry={() => getVotingRecords()}
       />
     );
   }
@@ -161,7 +161,7 @@ export default function History() {
       />
 
       {isModalVisible && !!selected && (
-        <HistoryModal
+        <RecordsModal
           onClose={() => setIsModalVisible(false)}
           value={selected.value}
           image={selected.image}
@@ -186,7 +186,6 @@ export default function History() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 10,
   },
   rowContainer: {

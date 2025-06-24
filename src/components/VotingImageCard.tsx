@@ -27,9 +27,9 @@ type Props = {
   order: number;
   votedImg: {
     id: string;
-    voteResult: 1 | 0;
+    value: 1 | 0;
   } | null;
-  handleVoteImg: (voteResult: 1 | 0) => void;
+  handleVoteImg: (value: 1 | 0) => void;
   dragEventListener: (position: {
     positionX: number;
     positionY: number;
@@ -103,14 +103,14 @@ export default function VotingImageCard({
   useEffect(() => {
     if (!votedImg || votedImg.id !== imgId) return;
 
-    const { voteResult } = votedImg;
+    const { value } = votedImg;
 
-    if (voteResult === 1) {
+    if (value === 1) {
       handleImgRight();
       return;
     }
 
-    if (voteResult === 0) {
+    if (value === 0) {
       handleImgLeft();
       return;
     }

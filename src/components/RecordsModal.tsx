@@ -8,13 +8,14 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { Image } from 'expo-image';
-import type { ListItem } from '@/app/(tabs)/(Voting)/History';
+import type { ListItem } from '@/app/(tabs)/(Voting)/Records';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import dayjs from 'dayjs';
 import { colorMap } from '../config';
 import VotingButton from './VotingButton';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Props = ListItem & {
   onClose: () => void;
@@ -28,7 +29,7 @@ type Props = ListItem & {
   }) => void;
 };
 
-export default function HistoryModal({
+export default function RecordsModal({
   onClose,
   value,
   image,
@@ -38,6 +39,7 @@ export default function HistoryModal({
   isVoting,
   handleVoteAgain,
 }: Props) {
+  const insets = useSafeAreaInsets();
   const [isInfoModalVisible, setIsInfoModalVisible] = useState<boolean>(false);
 
   const InfoModal = () => (
@@ -51,7 +53,14 @@ export default function HistoryModal({
         style={styles.closeInfoModalArea}
       ></Pressable>
 
-      <View style={styles.InfoModalView}>
+      <View
+        style={[
+          styles.InfoModalView,
+          {
+            paddingBottom: insets.bottom,
+          },
+        ]}
+      >
         <View style={styles.rowContainer}>
           <Text style={styles.InfoModalText}>You voted at: </Text>
 
@@ -80,8 +89,15 @@ export default function HistoryModal({
     >
       <InfoModal />
 
-      <View style={styles.HistoryModalView}>
-        <View style={styles.headerContainer}>
+      <View style={styles.RecordsModalView}>
+        <View
+          style={[
+            styles.headerContainer,
+            {
+              paddingTop: insets.top,
+            },
+          ]}
+        >
           <TouchableHighlight
             style={styles.highlightButton}
             onPress={() => setIsInfoModalVisible(true)}
@@ -120,7 +136,14 @@ export default function HistoryModal({
           contentFit="contain"
         />
 
-        <View style={styles.footerContainer}>
+        <View
+          style={[
+            styles.footerContainer,
+            {
+              paddingBottom: insets.bottom,
+            },
+          ]}
+        >
           <VotingButton
             type="vote-down"
             onPress={() =>
@@ -157,7 +180,7 @@ export default function HistoryModal({
 }
 
 const styles = StyleSheet.create({
-  HistoryModalView: {
+  RecordsModalView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -170,7 +193,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     alignItems: 'center',
-    padding: 10,
+    padding: 30,
     backgroundColor: 'transparent',
     zIndex: 10,
     left: 0,

@@ -68,7 +68,7 @@ export const request_deleteFav = ({
 };
 
 // get fav list
-export const request_getFavList = (params: {
+export const request_getFavsList = (params: {
   sub_id: string;
   limit: Limit;
   order: Order;
@@ -80,8 +80,8 @@ export const request_getFavList = (params: {
   });
 };
 
-// get vote history
-export const request_getVoteHistory = (params: {
+// get voting records
+export const request_getVotingRecords = (params: {
   limit: Limit;
   order: Order;
 }) => {

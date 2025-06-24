@@ -11,12 +11,12 @@ export default function VotingLayout() {
       <Stack
         initialRouteName="index"
         screenOptions={{
-          animation: 'fade',
+          animation: 'flip',
         }}
       >
         <Stack.Screen
           name="index"
-          options={{ headerShown: false, title: 'Voting' }}
+          options={{ headerShown: false, title: 'Swipe' }}
         />
 
         <Stack.Screen
@@ -25,10 +25,10 @@ export default function VotingLayout() {
         />
 
         <Stack.Screen
-          name="History"
+          name="Records"
           options={{
             headerShown: true,
-            title: 'Vote History',
+            title: 'Records',
             headerRight: () => (
               <Pressable
                 onPress={() => router.replace('/Favs')}
@@ -51,13 +51,13 @@ export default function VotingLayout() {
             title: 'Your Favorites',
             headerRight: () => (
               <Pressable
-                onPress={() => router.replace('/History')}
+                onPress={() => router.replace('/Records')}
                 style={styles.button}
               >
                 <FontAwesome5
                   name="history"
                   size={16}
-                  color={colorMap['history']}
+                  color={colorMap['records']}
                 />
               </Pressable>
             ),

@@ -30,7 +30,7 @@ type ImgState = {
 
 type VotedImgState = {
   id: string;
-  voteResult: 1 | 0;
+  value: 1 | 0;
 };
 
 export default function Voting() {
@@ -77,23 +77,28 @@ export default function Voting() {
     }
   }
 
-  async function voteImg({ voteValue }: { voteValue: 1 | 0 }) {
+  async function voteImg({
+    voteValue,
+    imageId,
+  }: {
+    voteValue: 1 | 0;
+    imageId: string;
+  }) {
     setIsSubmitting(true);
-    const imgId = imgs[0].id;
     setVotedImg({
-      id: imgId,
-      voteResult: voteValue,
+      id: imageId,
+      value: voteValue,
     });
     setIsVotingError(false);
     try {
       const result = await request_vote({
-        image_id: imgId,
+        image_id: imageId,
         sub_id: subId,
         value: voteValue,
       });
 
       if (result.message === 'SUCCESS') {
-        const filterImg = imgs.filter((item) => item.id !== imgId);
+        const filterImg = imgs.filter((item) => item.id !== imageId);
         setImgs(filterImg);
       } else {
         throw new Error(result.message || 'Error !');
@@ -107,14 +112,13 @@ export default function Voting() {
     }
   }
 
-  async function favImg() {
+  async function favImg({ imageId }: { imageId: string }) {
     setIsFav(true);
     setIsSubmitting(true);
-    const imgId = imgs[0].id;
     try {
       const result = await request_saveFav({
         sub_id: subId,
-        image_id: imgId,
+        image_id: imageId,
       });
 
       if (result.message === 'SUCCESS') {
@@ -173,9 +177,9 @@ export default function Voting() {
     });
   }
 
-  function toHistory() {
+  function toRecords() {
     router.push({
-      pathname: '/History',
+      pathname: '/Records',
     });
   }
 
@@ -218,8 +222,8 @@ export default function Voting() {
                   uri: item.url,
                 }}
                 votedImg={votedImg}
-                handleVoteImg={(voteResult) =>
-                  voteImg({ voteValue: voteResult })
+                handleVoteImg={(value) =>
+                  voteImg({ voteValue: value, imageId: imgs[0].id })
                 }
                 dragEventListener={dragEventListener}
               />
@@ -238,7 +242,7 @@ export default function Voting() {
 
           <VotingButton
             type="vote-down"
-            onPress={() => voteImg({ voteValue: 0 })}
+            onPress={() => voteImg({ voteValue: 0, imageId: imgs[0].id })}
             disabled={isLoading || !imgs.length || isSubmitting}
             buttonBgColor={
               isLoading
@@ -255,7 +259,7 @@ export default function Voting() {
             disabled={isLoading || !imgs.length || isSubmitting}
             onPress={() => {
               if (!isFav && !favid) {
-                favImg();
+                favImg({ imageId: imgs[0].id });
               } else {
                 delFavImg();
               }
@@ -270,7 +274,7 @@ export default function Voting() {
 
           <VotingButton
             type="vote-up"
-            onPress={() => voteImg({ voteValue: 1 })}
+            onPress={() => voteImg({ voteValue: 1, imageId: imgs[0].id })}
             disabled={isLoading || !imgs.length || isSubmitting}
             buttonBgColor={
               isLoading
@@ -285,12 +289,12 @@ export default function Voting() {
           <TouchableHighlight
             style={styles.otherButtonWrapper}
             disabled={isLoading || !imgs.length || isSubmitting}
-            onPress={toHistory}
+            onPress={toRecords}
           >
             <FontAwesome5
               name="history"
               size={20}
-              color={colorMap['history']}
+              color={colorMap['records']}
             />
           </TouchableHighlight>
         </View>

@@ -3,8 +3,8 @@ import { VotingSettingsType } from '../types';
 export const subId = 'lovecatguy';
 
 export const pendingVotingPosition = {
-  left: -60,
-  right: 60,
+  left: -40,
+  right: 40,
 };
 
 export const getImagesLimit = {
@@ -20,7 +20,7 @@ export const colorMap = {
   disabled: '#cbcbcb',
   retry: '#ff6841',
   settings: '#ff8818',
-  history: '#977fe7',
+  records: '#977fe7',
   'fav-active': '#f70707',
   'fav-disabled': '#cbcbcb',
   'vote-disabled': '#4b4b4b',
