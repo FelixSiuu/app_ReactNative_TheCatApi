@@ -1,5 +1,5 @@
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
-import { request_getVoteHistory } from '@/src/api';
+import { request_getVoteHistory, request_vote } from '@/src/api';
 import { colorMap, subId } from '@/src/config';
 import { useEffect, useState } from 'react';
 import { Image, ImageSource } from 'expo-image';
@@ -28,6 +28,7 @@ export default function History() {
     status: boolean;
     text: string;
   }>({ status: false, text: '' });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   async function getVoteHistory() {
     setIsLoading(true);
@@ -55,6 +56,34 @@ export default function History() {
       });
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function voteImg({
+    voteValue,
+    imgId,
+  }: {
+    voteValue: ListItem['value'];
+    imgId: ListItem['image_id'];
+  }) {
+    setIsSubmitting(true);
+    try {
+      const result = await request_vote({
+        image_id: imgId,
+        sub_id: subId,
+        value: voteValue,
+      });
+
+      if (result.message === 'SUCCESS') {
+        setIsModalVisible(false);
+        getVoteHistory();
+      } else {
+        throw new Error(result.message || 'Error !');
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -141,6 +170,13 @@ export default function History() {
           sub_id={subId}
           created_at={selected.created_at}
           country_code={selected.country_code}
+          isVoting={isSubmitting}
+          handleVoteAgain={({ value, imgId }) =>
+            voteImg({
+              voteValue: value,
+              imgId: imgId,
+            })
+          }
         />
       )}
     </View>
