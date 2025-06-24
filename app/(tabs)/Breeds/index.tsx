@@ -8,20 +8,18 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { request_getBreedInfo } from '@/src/api';
-import Loading from '@/src/components/Loading';
 import { BreedsParams } from '@/src/types';
 import { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { Image } from 'expo-image';
 import { colorMap } from '@/src/config';
-import Stars from '@/src/components/Stars';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import ErrorContainer from '@/src/components/ErrorContainer';
+import { ErrorContainer, Loading, Stars } from '@/src/components';
 
 const fixedParams = {
   mime_types: 'jpg,png',
-  limit: 1,
+  limit: '1',
 };
 
 type SelectedState = { [key: string]: any };

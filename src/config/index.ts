@@ -19,7 +19,7 @@ export const colorMap = {
   tabBarActiveTintColor: '#ff6841',
   disabled: '#cbcbcb',
   retry: '#ff6841',
-  settings: '#fea832',
+  settings: '#ff8818',
   history: '#977fe7',
   'fav-active': '#f70707',
   'fav-disabled': '#cbcbcb',

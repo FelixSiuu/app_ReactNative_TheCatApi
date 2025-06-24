@@ -20,6 +20,7 @@ export default function VotingButton({
 }: Props) {
   return (
     <TouchableOpacity
+      activeOpacity={0.7}
       onPress={onPress}
       disabled={disabled}
       style={[

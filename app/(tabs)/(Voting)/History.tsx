@@ -1,13 +1,10 @@
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import { request_getVoteHistory } from '@/src/api';
-import { useEffect, useState } from 'react';
-import Loading from '@/src/components/Loading';
-import ErrorContainer from '@/src/components/ErrorContainer';
-import { Image, ImageSource } from 'expo-image';
-import Empty from '@/src/components/Empty';
-import HistoryModal from '@/src/components/HistoryModal';
 import { colorMap, subId } from '@/src/config';
+import { useEffect, useState } from 'react';
+import { Image, ImageSource } from 'expo-image';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Empty, ErrorContainer, HistoryModal, Loading } from '@/src/components';
 
 export type ListItem = {
   id: number;
@@ -70,6 +67,10 @@ export default function History() {
     setIsModalVisible(true);
   }
 
+  function isThumbsUp(value: ListItem['value']) {
+    return value === 1;
+  }
+
   if (isLoading) {
     return <Loading />;
   }
@@ -110,17 +111,19 @@ export default function History() {
                 {
                   transform: [
                     {
-                      rotate: item.value === 1 ? '-10deg' : '10deg',
+                      rotate: isThumbsUp(item.value) ? '-10deg' : '10deg',
                     },
                   ],
                 },
               ]}
             >
               <FontAwesome
-                name={item.value === 1 ? 'thumbs-up' : 'thumbs-down'}
+                name={isThumbsUp(item.value) ? 'thumbs-up' : 'thumbs-down'}
                 size={24}
                 color={
-                  item.value === 1 ? colorMap['vote-up'] : colorMap['vote-down']
+                  isThumbsUp(item.value)
+                    ? colorMap['vote-up']
+                    : colorMap['vote-down']
                 }
               />
             </View>

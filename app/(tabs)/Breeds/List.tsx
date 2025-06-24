@@ -1,6 +1,4 @@
 import { request_getBreedsList } from '@/src/api';
-import Empty from '@/src/components/Empty';
-import Loading from '@/src/components/Loading';
 import { colorMap } from '@/src/config';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -13,7 +11,7 @@ import {
   FlatList,
 } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import ErrorContainer from '@/src/components/ErrorContainer';
+import { Empty, ErrorContainer, Loading } from '@/src/components';
 
 export default function List() {
   const { id } = useLocalSearchParams();

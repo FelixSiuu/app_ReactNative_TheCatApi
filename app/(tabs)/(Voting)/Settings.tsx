@@ -16,7 +16,7 @@ import {
   SizeSettingsModal,
   HasBreedsSettingsModal,
   CategorySettingsModal,
-} from '@/src/components/VotingSettingsModal';
+} from '@/src/components';
 import { colorMap } from '@/src/config';
 import { useRouter } from 'expo-router';
 import {

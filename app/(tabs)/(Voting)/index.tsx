@@ -4,19 +4,21 @@ import {
   request_saveFav,
   request_vote,
 } from '@/src/api';
-import { colorMap, pendingVotingPosition, subId } from '@/src/config';
-import { useEffect, useState } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useRouter } from 'expo-router';
 import { useSettings } from '@/src/context';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Loading from '@/src/components/Loading';
-import ErrorContainer from '@/src/components/ErrorContainer';
-import VotingButton from '@/src/components/VotingButton';
-import VotingImageCard from '@/src/components/VotingImageCard';
+import { colorMap, pendingVotingPosition, subId } from '@/src/config';
+import { useEffect, useState } from 'react';
+import { View, StyleSheet, TouchableHighlight } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import {
+  ErrorContainer,
+  Loading,
+  VotingButton,
+  VotingImageCard,
+} from '@/src/components';
 
 type ImgState = {
   height: number;
@@ -227,12 +229,12 @@ export default function Voting() {
       )}
       <View style={styles.bottomBtnGroup}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
+          <TouchableHighlight
             style={styles.otherButtonWrapper}
             onPress={() => toSettings()}
           >
-            <Ionicons name="settings" size={24} color={colorMap['settings']} />
-          </TouchableOpacity>
+            <FontAwesome name="gears" size={24} color={colorMap['settings']} />
+          </TouchableHighlight>
 
           <VotingButton
             type="vote-down"
@@ -248,7 +250,7 @@ export default function Voting() {
             iconColor={isHighLightVoteDown ? 'white' : colorMap['vote-down']}
           />
 
-          <TouchableOpacity
+          <TouchableHighlight
             style={styles.otherButtonWrapper}
             disabled={isLoading || !imgs.length || isSubmitting}
             onPress={() => {
@@ -264,7 +266,7 @@ export default function Voting() {
               size={20}
               color={colorMap['fav-active']}
             />
-          </TouchableOpacity>
+          </TouchableHighlight>
 
           <VotingButton
             type="vote-up"
@@ -280,7 +282,7 @@ export default function Voting() {
             iconColor={isHighLightVoteUp ? 'white' : colorMap['vote-up']}
           />
 
-          <TouchableOpacity
+          <TouchableHighlight
             style={styles.otherButtonWrapper}
             disabled={isLoading || !imgs.length || isSubmitting}
             onPress={toHistory}
@@ -290,7 +292,7 @@ export default function Voting() {
               size={20}
               color={colorMap['history']}
             />
-          </TouchableOpacity>
+          </TouchableHighlight>
         </View>
       </View>
     </View>

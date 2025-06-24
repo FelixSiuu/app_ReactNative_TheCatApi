@@ -8,6 +8,7 @@ export default function TabLayout() {
       initialRouteName="(Voting)"
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
         tabBarActiveTintColor: colorMap['tabBarActiveTintColor'],
         tabBarLabelStyle: {
           fontSize: 12,
@@ -40,7 +41,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <MaterialCommunityIcons
               name={focused ? 'book-search' : 'book-search-outline'}
-              size={24}
+              size={22}
               color={color}
             />
           ),

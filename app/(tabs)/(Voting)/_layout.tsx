@@ -8,7 +8,12 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 export default function VotingLayout() {
   return (
     <VotingSettingsProvider>
-      <Stack initialRouteName="index">
+      <Stack
+        initialRouteName="index"
+        screenOptions={{
+          animation: 'fade',
+        }}
+      >
         <Stack.Screen
           name="index"
           options={{ headerShown: false, title: 'Voting' }}
