@@ -6,7 +6,8 @@ import ErrorContainer from '@/src/components/ErrorContainer';
 import { Image, ImageSource } from 'expo-image';
 import Empty from '@/src/components/Empty';
 import HistoryModal from '@/src/components/HistoryModal';
-import { subId } from '@/src/config';
+import { colorMap, subId } from '@/src/config';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 export type ListItem = {
   id: number;
@@ -91,7 +92,7 @@ export default function History() {
         renderItem={({ item }) => (
           <Pressable
             key={item.id}
-            style={{ backgroundColor: '#e2e2e2', flex: 1, aspectRatio: '1' }}
+            style={styles.item}
             onPress={() => handleOpenModal(item)}
           >
             <Image
@@ -102,6 +103,27 @@ export default function History() {
               }}
               contentFit={'cover'}
             />
+
+            <View
+              style={[
+                styles.iconContainer,
+                {
+                  transform: [
+                    {
+                      rotate: item.value === 1 ? '-10deg' : '10deg',
+                    },
+                  ],
+                },
+              ]}
+            >
+              <FontAwesome
+                name={item.value === 1 ? 'thumbs-up' : 'thumbs-down'}
+                size={24}
+                color={
+                  item.value === 1 ? colorMap['vote-up'] : colorMap['vote-down']
+                }
+              />
+            </View>
           </Pressable>
         )}
       />
@@ -132,5 +154,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
     flexWrap: 'wrap',
+  },
+  item: { flex: 1, aspectRatio: '1', position: 'relative' },
+  iconContainer: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+    zIndex: 10,
   },
 });
